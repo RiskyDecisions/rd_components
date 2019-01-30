@@ -1,0 +1,5 @@
+include rd_components/rd_components.min.js
+include rd_components/rd_components.dev.js
+include rd_components/metadata.json
+include rd_components/package.json
+include README.md
