@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
  * It renders an input with the property `value`
  * which is editable by the user.
  */
-export default class TreeComponent extends Component {
+export default class Select extends Component {
     render() {
         // const {id, className, setProps, options} = this.props;
         const {id, className} = this.props;
@@ -53,9 +53,9 @@ export default class TreeComponent extends Component {
     }
 }
 
-TreeComponent.defaultProps = {};
+Select.defaultProps = {};
 
-TreeComponent.propTypes = {
+Select.propTypes = {
     /**
      * The ID used to identify this component in Dash callbacks
      */
