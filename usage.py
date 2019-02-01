@@ -9,8 +9,9 @@ app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 
 app.layout = html.Div([
-    rd_components.Input(id="input"),
-    html.Div(id='output')
+    rd_components.Input(id="input", style={'border': '1px solid red'}, value='hej'),
+    html.Div(id='output'),
+    html.Button('show input', id="toggle"),
 ])
 
 @app.callback(
@@ -23,6 +24,18 @@ app.layout = html.Div([
 def display_output(value, ts):
     print(f'ts: {ts}')
     return 'You have entered {}'.format(value)
+
+@app.callback(
+    Output('input', 'show'),
+    [
+        Input('toggle', 'n_clicks_timestamp'),
+    ]
+)
+def display_output(ts):
+    if not ts:
+        return False
+    else:
+        return True
 
 
 if __name__ == '__main__':

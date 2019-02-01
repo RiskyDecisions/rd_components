@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { omit } from 'ramda';
 
 /**
  * Input component that setProps on enter
@@ -8,24 +9,21 @@ export default class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value,
+      value: props.value || '',
     };
   }
 
   render() {
-    const { id, className, placeholder, setProps, type = 'text' } = this.props;
-
+    if (!this.props.show) {
+      return null;
+    }
     return (
       <input
-        id={id}
-        placeholder={placeholder}
-        className={className}
-        type={type}
         value={this.state.value}
         onKeyPress={e => {
           if (e.key === 'Enter') {
-            if (setProps) {
-              setProps({
+            if (this.props.setProps) {
+              this.props.setProps({
                 value: e.target.value,
                 n_clicks_timestamp: Date.now(),
               });
@@ -33,17 +31,20 @@ export default class Input extends Component {
           }
         }}
         onChange={e => {
+
           this.setState({
             value: e.target.value,
           });
         }}
+        {...omit(['n_clicks_timestamp', 'value'], this.props)}
       />
     );
   }
 }
 
 Input.defaultProps = {
-  n_clicks_timestamp: -1
+  n_clicks_timestamp: -1,
+  show: true,
 };
 
 Input.propTypes = {
@@ -64,7 +65,7 @@ Input.propTypes = {
    */
   'n_clicks_timestamp': PropTypes.number,
 
-    /**
+  /**
    * Placeholder
    */
   placeholder: PropTypes.string,
@@ -74,6 +75,17 @@ Input.propTypes = {
    * properties change
    */
   setProps: PropTypes.func,
+
+  /**
+   * Should the element be shown
+   */
+  show: PropTypes.bool,
+
+
+  /**
+   * Defines CSS styles which will override styles previously set.
+   */
+  'style': PropTypes.object,
 
   /**
    * Type
