@@ -10,15 +10,16 @@ Input component that setProps on enter
 Keyword arguments:
 - id (string; optional): The ID used to identify this component in Dash callbacks
 - className (string; optional): ClassName
+- placeholder (string; optional): Placeholder
 - type (string; optional): Type
 - value (string; optional): The value displayed in the input"""
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, type=Component.UNDEFINED, value=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'className', 'type', 'value']
+    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, placeholder=Component.UNDEFINED, type=Component.UNDEFINED, value=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'className', 'placeholder', 'type', 'value']
         self._type = 'Input'
         self._namespace = 'rd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'className', 'type', 'value']
+        self.available_properties = ['id', 'className', 'placeholder', 'type', 'value']
         self.available_wildcard_properties =            []
 
         _explicit_args = kwargs.pop('_explicit_args')

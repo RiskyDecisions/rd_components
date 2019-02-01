@@ -13,11 +13,12 @@ export default class Input extends Component {
   }
 
   render() {
-    const { id, className, setProps, type = 'text' } = this.props;
+    const { id, className, placeholder, setProps, type = 'text' } = this.props;
 
     return (
       <input
         id={id}
+        placeholder={placeholder}
         className={className}
         type={type}
         value={this.state.value}
@@ -52,6 +53,11 @@ Input.propTypes = {
    * ClassName
    */
   className: PropTypes.string,
+
+  /**
+   * Placeholder
+   */
+  placeholder: PropTypes.string,
 
   /**
    * Dash-assigned callback that should be called whenever any of the
