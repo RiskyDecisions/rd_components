@@ -13,8 +13,15 @@ app.layout = html.Div([
     html.Div(id='output')
 ])
 
-@app.callback(Output('output', 'children'), [Input('input', 'value')])
-def display_output(value):
+@app.callback(
+    Output('output', 'children'),
+    [
+        Input('input', 'value'),
+        Input('input', 'n_clicks_timestamp'),
+    ]
+)
+def display_output(value, ts):
+    print(f'ts: {ts}')
     return 'You have entered {}'.format(value)
 
 

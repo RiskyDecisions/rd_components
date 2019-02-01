@@ -27,6 +27,7 @@ export default class Input extends Component {
             if (setProps) {
               setProps({
                 value: e.target.value,
+                n_clicks_timestamp: Date.now(),
               });
             }
           }
@@ -41,7 +42,9 @@ export default class Input extends Component {
   }
 }
 
-Input.defaultProps = {};
+Input.defaultProps = {
+  n_clicks_timestamp: -1
+};
 
 Input.propTypes = {
   /**
@@ -55,6 +58,13 @@ Input.propTypes = {
   className: PropTypes.string,
 
   /**
+   * An integer that represents the time (in ms since 1970)
+   * at which n_clicks changed. This can be used to tell
+   * which button was changed most recently.
+   */
+  'n_clicks_timestamp': PropTypes.number,
+
+    /**
    * Placeholder
    */
   placeholder: PropTypes.string,
