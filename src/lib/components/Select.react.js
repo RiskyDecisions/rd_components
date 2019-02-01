@@ -15,7 +15,8 @@ export default class Select extends Component {
 
         return (
           <select className={className} id={id}>
-            <option>1</option>
+            <option>Morten</option>
+            <option>Andreas</option>
             <option>2</option>
           </select>
         )
