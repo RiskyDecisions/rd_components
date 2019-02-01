@@ -1,7 +1,7 @@
-from .Select import Select
+from .Input import Input
 from .TreeComponent import TreeComponent
 
 __all__ = [
-    "Select",
+    "Input",
     "TreeComponent"
 ]

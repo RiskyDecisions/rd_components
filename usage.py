@@ -9,11 +9,7 @@ app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 
 app.layout = html.Div([
-    rd_components.TreeComponent(
-        id='input',
-        value='my-value',
-        label='my-label'
-    ),
+    rd_components.Input(id="input"),
     html.Div(id='output')
 ])
 
@@ -23,4 +19,4 @@ def display_output(value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8888)

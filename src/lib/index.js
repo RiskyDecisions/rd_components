@@ -1,8 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import TreeComponent from './components/TreeComponent.react';
-import Select from './components/Select.react';
+import Input from './components/Input.react';
 
 export {
-    TreeComponent,
-    Select,
+    Input,
 };
