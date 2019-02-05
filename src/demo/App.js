@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 import { TreeComponent, VarEditor } from '../lib';
-
+import { vars } from './dummyVars';
 
 class App extends Component {
 
@@ -35,6 +35,7 @@ class App extends Component {
         <VarEditor
           setProps={this.setProps}
           show={this.state.showVarEditor}
+          data={{"variables": vars}}
         />
         <button onClick={this.addVar}>Add var</button>
       </div>

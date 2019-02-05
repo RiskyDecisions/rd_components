@@ -16,7 +16,7 @@ export default class TreeComponent extends Component {
             <div id={id}>
                 ExampleComponent: {label}&nbsp;
                 <input
-                    value={this.state.value}
+                    value={value}
                     onChange={e => {
                         /*
                          * Send the new value to the parent component.
