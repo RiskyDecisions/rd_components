@@ -10,18 +10,19 @@ class App extends Component {
     super();
     this.state = {
       value: '',
-      showVarEditor: false,
+      varEditorData: {},
     };
     this.setProps = this.setProps.bind(this);
     this.addVar = this.addVar.bind(this);
   }
 
   setProps(newProps) {
+    console.log('newProps: ', newProps);
     this.setState(newProps);
   }
 
   addVar() {
-    this.setState({ showVarEditor: !this.state.showVarEditor })
+    this.setState({ varEditorData: { "variables": vars, moduleId: 1, timestamp: Date.now() } })
   }
 
   render() {
@@ -34,8 +35,7 @@ class App extends Component {
         />
         <VarEditor
           setProps={this.setProps}
-          show={this.state.showVarEditor}
-          data={{"variables": vars}}
+          data={this.state.varEditorData}
         />
         <button onClick={this.addVar}>Add var</button>
       </div>

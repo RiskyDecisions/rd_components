@@ -32,7 +32,7 @@ app.layout = html.Div([
     rd_components.Input(id="input", style={'border': '1px solid red'}, value='hej'),
     html.Div(id='output'),
     html.Button('Add variable', id="button-add-var"),
-    rd_components.VarEditor(id='var-editor', show=True),
+    rd_components.VarEditor(id='var-editor'),
 ])
 
 @app.callback(
@@ -52,7 +52,7 @@ def var_editor_callback(ts):
 @app.callback(
     Output('output', 'children'),
     [
-        Input('var-editor', 'n_clicks_timestamp'),
+        Input('var-editor', 'submit_timestamp'),
     ],
     [
         State('var-editor', 'data'),

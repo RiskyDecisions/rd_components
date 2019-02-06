@@ -1,33 +1,40 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { any, anyPass, omit, pick, propEq, propIs, values } from 'ramda';
+import { pick } from 'ramda';
 
 import { TYPE_METHOD_MAP } from "../constants";
 
+
+const initialState = {
+  correlate: false,
+  correlateDropdownIsOpen: false,
+  correlatedTo: '',
+  correlationFactor: '',
+  formIsValid: false,
+  varMethod: '',
+  varMethodDropdownIsOpen: false,
+  varName: '',
+  varType: '',
+  varTypeDropdownIsOpen: false,
+  varValueFunction: '',
+  varValueHigh: '',
+  varValueLow: '',
+  varValueMid: '',
+  varId: '',
+  show: false,
+}
+
+
 /**
  * VarEditor component
+ *
+ * This component will be shown whenever a new timestamp
+ * is passed via props data object.
  */
 export default class VarEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      correlate: false,
-      correlateDropdownIsOpen: false,
-      correlatedTo: '',
-      correlationFactor: '',
-      formIsValid: false,
-      varMethod: '',
-      varMethodDropdownIsOpen: false,
-      varName: '',
-      varType: '',
-      varTypeDropdownIsOpen: false,
-      varValueFunction: '',
-      varValueHigh: '',
-      varValueLow: '',
-      varValueMid: '',
-      varId: '',
-      VarModuleId: '',
-    };
+    this.state = initialState;
 
     this.close = this.close.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -40,9 +47,13 @@ export default class VarEditor extends Component {
     this.toggle = this.toggle.bind(this);
   }
 
+
+
   componentWillReceiveProps(newProps) {
-    console.log('newProps: ', newProps);
-    this.setState({ show: true });
+    // Show component if props.data contains new timestamp
+    if (newProps.data.timestamp !== this.props.data.timestamp) {
+      this.setState({ show: true });
+    }
   }
 
   handleInputChange(event) {
@@ -60,37 +71,42 @@ export default class VarEditor extends Component {
     const name = target.name;
     this.setState({ [name]: value }, () => {
       const { varValueLow, varValueMid, varValueHigh, varValueFunction, varType } = this.state;
-      if (varType !== 'function ') {
-        this.setState({ varValue: `${varValueLow} ${varValueMid} ${varValueHigh}` })
-      } else {
+      if (varType !== 'function') {
         this.setState({ varValue: `${varValueFunction}` })
+      } else {
+        this.setState({ varValue: `${varValueLow} ${varValueMid} ${varValueHigh}` })
       }
     });
   }
 
   submit() {
     const varData = {
+      correlation: this.state.correlatedTo,
+      factor: this.state.correlationFactor,
+      method: this.state.varMethod,
+      module_id: this.props.data.moduleId,
       name: this.state.varName,
       type: this.state.varType,
-      method: this.state.varMethod,
       value: this.getVarValue(),
-      correlatedTo: this.state.correlatedTo,
-      correlationFactor: this.state.correlationFactor,
+      timestamp: this.props.data.timestamp,
     }
+    console.log('varData: ', varData);
+
     if (this.props.setProps && this.formIsValid()) {
       this.props.setProps({
-        n_clicks_timestamp: Date.now(),
+        submit_timestamp: Date.now(),
         data: varData
       });
+      this.close()
     }
   }
 
   close() {
-    this.setState({ show: false });
+    this.setState(initialState);
   }
 
   getVarValue() {
-    if (this.state.varType === 'function') {
+    if (this.state.varMethod === 'function') {
       return this.state.varValueFunction
     }
     return this.state.varValueLow + ' ' + this.state.varValueMid + ' ' + this.state.varValueHigh;
@@ -104,12 +120,9 @@ export default class VarEditor extends Component {
       'varMethod',
       'varName',
       'varType',
-      'varValue',
-      // 'varValueFunction',
-      // 'varValueHigh',
-      // 'varValueLow',
-      // 'varValueMid',
     ]
+    // TODO:
+    // validata 'varValue' properly
     const vars = pick(varsToVerify, this.state)
 
     for (const i in vars) {
@@ -353,6 +366,8 @@ export default class VarEditor extends Component {
                 name="correlationFactor"
                 placeholder="Factor"
                 className="form-control"
+                onChange={this.handleInputChange}
+                value={this.state.correlationFactor}
               />
             </div>
           </div>
@@ -402,8 +417,10 @@ export default class VarEditor extends Component {
 }
 
 VarEditor.defaultProps = {
-  n_clicks_timestamp: -1,
-  show: false,
+  submit_timestamp: -1,
+  data: {
+    timestamp: 0
+  }
 };
 
 VarEditor.propTypes = {
@@ -419,11 +436,16 @@ VarEditor.propTypes = {
 
   /**
    * Data
+   *
+   * moduleId: which module to add var to
+   * variables: array with all project vars
+   * timestamp: must pass a new timestamp to show the component
    */
   data: PropTypes.shape({
     id: PropTypes.number,
-    module_id: PropTypes.number,
-    variables: PropTypes.array.isRequired,
+    moduleId: PropTypes.number,
+    variables: PropTypes.array,
+    timestamp: PropTypes.number,
   }),
 
   /**
@@ -431,7 +453,7 @@ VarEditor.propTypes = {
    * at which n_clicks changed. This can be used to tell
    * which button was changed most recently.
    */
-  'n_clicks_timestamp': PropTypes.number,
+  'submit_timestamp': PropTypes.number,
 
   /**
    * Placeholder
@@ -443,11 +465,6 @@ VarEditor.propTypes = {
    * properties change
    */
   setProps: PropTypes.func,
-
-  /**
-   * Should the element be shown
-   */
-  show: PropTypes.bool,
 
   /**
    * Defines CSS styles which will override styles previously set.
