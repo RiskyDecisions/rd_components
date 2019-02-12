@@ -270,6 +270,51 @@ export default class VarEditor extends Component {
         </div>
       )
     }
+    else if (this.state.varType === 'timeseries') {
+      return (
+        <div className="form-group">
+          <label>Value</label>
+          <div className="form-row">
+            <div className="col-sm-4">
+              <input
+                placeholder="Start"
+                type="number"
+                name="varValueLow"
+                id="varValueLow"
+                onChange={this.handleValueInputChange}
+                value={this.state.varValueLow}
+                className="form-control"
+                disabled={this.state.varMethod ? false : true}
+              />
+            </div>
+            <div className="col-sm-4">
+              <input
+                placeholder="Capicity"
+                type="number"
+                name="varValueMid"
+                id="varValueMid"
+                onChange={this.handleValueInputChange}
+                value={this.state.varValueMid}
+                className="form-control"
+                disabled={this.state.varMethod ? false : true}
+              />
+            </div>
+            <div className="col-sm-4">
+              <input
+                placeholder="Total"
+                type="number"
+                name="varValueHigh"
+                id="varValueHigh"
+                onChange={this.handleValueInputChange}
+                value={this.state.varValueHigh}
+                className="form-control"
+                disabled={this.state.varMethod ? false : true}
+              />
+            </div>
+          </div>
+        </div>
+      )
+    }
     return (
       <div className="form-group">
         <label>Value</label>

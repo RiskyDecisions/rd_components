@@ -74,6 +74,26 @@ export const TYPE_METHOD_MAP = {
           "value": 'timefunction',
           "name": 'Timefunction',
         },
+        {
+          "value": 'buildup_linear',
+          "name": 'Linear build-up',
+        },
+        {
+          "value": 'buildup_exp',
+          "name": 'Exponential build-up',
+        },
+        {
+          "value": 'decline_linear',
+          "name": 'Linear decline/dropoff',
+        },
+        {
+          "value": 'decline_exp',
+          "name": 'Exponential decline/dropoff',
+        },
+        {
+          "value": 'lookup_table',
+          "name": 'Look-up table',
+        },
       ]
   }
 }
