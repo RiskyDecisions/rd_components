@@ -277,7 +277,7 @@ export default class VarEditor extends Component {
           <div className="form-row">
             <div className="col-sm-4">
               <input
-                placeholder="Start"
+                placeholder="Total"
                 type="number"
                 name="varValueLow"
                 id="varValueLow"
@@ -289,7 +289,7 @@ export default class VarEditor extends Component {
             </div>
             <div className="col-sm-4">
               <input
-                placeholder="Capicity"
+                placeholder="Duration"
                 type="number"
                 name="varValueMid"
                 id="varValueMid"
@@ -301,7 +301,7 @@ export default class VarEditor extends Component {
             </div>
             <div className="col-sm-4">
               <input
-                placeholder="Total"
+                placeholder="Start"
                 type="number"
                 name="varValueHigh"
                 id="varValueHigh"
