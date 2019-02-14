@@ -17,12 +17,21 @@ Keyword arguments:
 
 moduleId: which module to add var to
 variables: array with all project vars
-timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'moduleId', 'variables', 'timestamp'.
+timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'moduleId', 'variables', 'timestamp', 'variable'.
 Those keys have the following types:
   - id (number; optional)
   - moduleId (number; optional)
   - variables (list; optional)
   - timestamp (number; optional)
+  - variable (optional): . variable has the following type: dict containing keys 'correlation', 'factor', 'id', 'method', 'name', 'type', 'value'.
+Those keys have the following types:
+  - correlation (string; optional)
+  - factor (string; optional)
+  - id (string; optional)
+  - method (string; optional)
+  - name (string; optional)
+  - type (string; optional)
+  - value (string; optional)
 - submit_timestamp (number; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.

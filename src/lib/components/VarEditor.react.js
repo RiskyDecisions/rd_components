@@ -11,6 +11,7 @@ const initialState = {
   correlatedTo: '',
   correlationFactor: '',
   formIsValid: false,
+  modalTitle: 'Add Variable',
   varMethod: '',
   varMethodDropdownIsOpen: false,
   varName: '',
@@ -47,12 +48,26 @@ export default class VarEditor extends Component {
     this.toggle = this.toggle.bind(this);
   }
 
-
-
   componentWillReceiveProps(newProps) {
     // Show component if props.data contains new timestamp
     if (newProps.data.timestamp !== this.props.data.timestamp) {
-      this.setState({ show: true });
+      const variable = newProps.data.variable;
+      this.setState({
+        show: true,
+        correlate: variable && variable.correlation !== '' ? true : false,
+        correlatedTo: variable && variable.correlation || '',
+        correlationFactor: variable && variable.factor || '',
+        modalTitle: variable ? 'Edit Variable' : 'Add Variable',
+        varId: variable && variable.id || '',
+        varMethod: variable && variable.method || '',
+        varName: variable && variable.name || '',
+        varType: variable && variable.type || '',
+        varValue: variable && variable.value || '',
+        varValueFunction: variable && variable.method === 'function' ? variable.value : '',
+        varValueLow: variable && variable.method !== 'function' ? variable.value.split(' ')[0] : '',
+        varValueMid: variable && variable.method !== 'function' ? variable.value.split(' ')[1] : '',
+        varValueHigh: variable && variable.method !== 'function' ? variable.value.split(' ')[2] : '',
+      });
     }
   }
 
@@ -71,7 +86,7 @@ export default class VarEditor extends Component {
     const name = target.name;
     this.setState({ [name]: value }, () => {
       const { varValueLow, varValueMid, varValueHigh, varValueFunction, varType } = this.state;
-      if (varType !== 'function') {
+      if (varType === 'function') {
         this.setState({ varValue: `${varValueFunction}` })
       } else {
         this.setState({ varValue: `${varValueLow} ${varValueMid} ${varValueHigh}` })
@@ -81,16 +96,16 @@ export default class VarEditor extends Component {
 
   submit() {
     const varData = {
+      id: this.state.varId,
       correlation: this.state.correlatedTo,
       factor: this.state.correlationFactor,
       method: this.state.varMethod,
       module_id: this.props.data.moduleId,
       name: this.state.varName,
       type: this.state.varType,
-      value: this.getVarValue(),
+      value: this.state.varValue,
       timestamp: this.props.data.timestamp,
     }
-    console.log('varData: ', varData);
 
     if (this.props.setProps && this.formIsValid()) {
       this.props.setProps({
@@ -105,17 +120,8 @@ export default class VarEditor extends Component {
     this.setState(initialState);
   }
 
-  getVarValue() {
-    if (this.state.varMethod === 'function') {
-      return this.state.varValueFunction
-    }
-    return this.state.varValueLow + ' ' + this.state.varValueMid + ' ' + this.state.varValueHigh;
-  }
-
   formIsValid() {
-
     let isValid = true;
-
     const varsToVerify = [
       'varMethod',
       'varName',
@@ -197,9 +203,9 @@ export default class VarEditor extends Component {
     })
   }
 
-  handleCorrelateClick(moduleId, id, varName) {
+  handleCorrelateClick(varName) {
     this.setState({
-      correlatedTo: { module_id: moduleId, id: id, name: varName },
+      correlatedTo: varName,
       correlateDropdownIsOpen: false,
     })
   }
@@ -395,7 +401,7 @@ export default class VarEditor extends Component {
                       <a
                         className="dropdown-item"
                         href="#"
-                        onClick={() => this.handleCorrelateClick(variable.module_id, variable.id, variable.name)}
+                        onClick={() => this.handleCorrelateClick(variable.name)}
                         key={variable.module_id + '.' + variable.id}
                       >
                         {variable.name}
@@ -436,7 +442,7 @@ export default class VarEditor extends Component {
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Add Variable</h5>
+                <h5 className="modal-title">{ this.state.modalTitle }</h5>
                 <button type="button" className="close" onClick={this.close} aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -450,7 +456,7 @@ export default class VarEditor extends Component {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={this.close}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={this.submit}>Add Variable</button>
+                <button type="button" className="btn btn-primary" onClick={this.submit}>{this.state.modalTitle}</button>
               </div>
             </div>
           </div>
@@ -491,6 +497,15 @@ VarEditor.propTypes = {
     moduleId: PropTypes.number,
     variables: PropTypes.array,
     timestamp: PropTypes.number,
+    variable: PropTypes.shape({
+      'correlation': PropTypes.string,
+      'factor': PropTypes.string,
+      'id': PropTypes.string,
+      'method': PropTypes.string,
+      'name': PropTypes.string,
+      'type': PropTypes.string,
+      'value': PropTypes.string,
+    })
   }),
 
   /**
