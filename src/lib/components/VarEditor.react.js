@@ -15,6 +15,7 @@ const initialState = {
   varMethod: '',
   varMethodDropdownIsOpen: false,
   varName: '',
+  varTitle: '',
   varType: '',
   varTypeDropdownIsOpen: false,
   varValueFunction: '',
@@ -23,6 +24,7 @@ const initialState = {
   varValueMid: '',
   varId: '',
   show: false,
+  submitBtnText: 'Save Variable',
 }
 
 
@@ -58,9 +60,11 @@ export default class VarEditor extends Component {
         correlatedTo: variable && variable.correlation || '',
         correlationFactor: variable && variable.factor || '',
         modalTitle: variable ? 'Edit Variable' : 'Add Variable',
+        submitBtnText: variable ? 'Update Variable' : 'Save Variable',
         varId: variable && variable.id || '',
         varMethod: variable && variable.method || '',
         varName: variable && variable.name || '',
+        varTitle: variable && variable.title || '',
         varType: variable && variable.type || '',
         varValue: variable && variable.value || '',
         varValueFunction: variable && variable.method === 'function' ? variable.value : '',
@@ -101,10 +105,11 @@ export default class VarEditor extends Component {
       factor: this.state.correlationFactor,
       method: this.state.varMethod,
       module_id: this.props.data.moduleId,
-      name: this.state.varName,
+      name: this.state.varName.split(' ').join('_').toLowerCase(),
       type: this.state.varType,
       value: this.state.varValue,
       timestamp: this.props.data.timestamp,
+      title: this.state.varTitle,
     }
 
     if (this.props.setProps && this.formIsValid()) {
@@ -125,6 +130,7 @@ export default class VarEditor extends Component {
     const varsToVerify = [
       'varMethod',
       'varName',
+      'varTitle',
       'varType',
     ]
     // TODO:
@@ -146,10 +152,28 @@ export default class VarEditor extends Component {
     });
   }
 
+  renderTitleInput() {
+    return (
+      <div className="form-group">
+        <label htmlFor="varTitle">Title</label>
+        <input
+          autoFocus
+          type="string"
+          name="varTitle"
+          id="varTitle"
+          placeholder="Variable Title"
+          onChange={this.handleInputChange}
+          value={this.state.varTitle}
+          className="form-control"
+        />
+      </div>
+    )
+  }
+
   renderNameInput() {
     return (
       <div className="form-group">
-        <label htmlFor="varName">Name</label>
+        <label htmlFor="varName">Name (Used for reference in functions)</label>
         <input
           autoFocus
           type="string"
@@ -448,6 +472,7 @@ export default class VarEditor extends Component {
                 </button>
               </div>
               <div className="modal-body">
+                {this.renderTitleInput()}
                 {this.renderNameInput()}
                 {this.renderTypeDropdown()}
                 {this.renderMethodDropdown()}
@@ -456,7 +481,7 @@ export default class VarEditor extends Component {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={this.close}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={this.submit}>{this.state.modalTitle}</button>
+                <button type="button" className="btn btn-primary" onClick={this.submit}>{this.state.submitBtnText}</button>
               </div>
             </div>
           </div>
@@ -503,6 +528,7 @@ VarEditor.propTypes = {
       'id': PropTypes.string,
       'method': PropTypes.string,
       'name': PropTypes.string,
+      'title': PropTypes.string,
       'type': PropTypes.string,
       'value': PropTypes.string,
     })

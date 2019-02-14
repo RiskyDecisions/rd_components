@@ -23,13 +23,14 @@ Those keys have the following types:
   - moduleId (number; optional)
   - variables (list; optional)
   - timestamp (number; optional)
-  - variable (optional): . variable has the following type: dict containing keys 'correlation', 'factor', 'id', 'method', 'name', 'type', 'value'.
+  - variable (optional): . variable has the following type: dict containing keys 'correlation', 'factor', 'id', 'method', 'name', 'title', 'type', 'value'.
 Those keys have the following types:
   - correlation (string; optional)
   - factor (string; optional)
   - id (string; optional)
   - method (string; optional)
   - name (string; optional)
+  - title (string; optional)
   - type (string; optional)
   - value (string; optional)
 - submit_timestamp (number; optional): An integer that represents the time (in ms since 1970)
