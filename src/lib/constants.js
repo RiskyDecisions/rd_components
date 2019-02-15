@@ -8,7 +8,11 @@ export const TYPE_METHOD_MAP = {
       {
         "name": "Binomial",
         "value": "binomial"
-      }
+      },
+      {
+        "name": "Bernoulli",
+        "value": "bernoulli"
+      },
     ],
     "Continuous Distributions": [
       {
@@ -97,3 +101,5 @@ export const TYPE_METHOD_MAP = {
       ]
   }
 }
+
+export const DISCRETE_DIST_VALUES = TYPE_METHOD_MAP.variable['Discrete Distributions'].map(x => x.value)

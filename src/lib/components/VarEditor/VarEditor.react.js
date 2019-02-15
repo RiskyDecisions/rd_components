@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { pick } from 'ramda';
 
-import { TYPE_METHOD_MAP } from "../constants";
+import { DISCRETE_DIST_VALUES, TYPE_METHOD_MAP } from "../../constants";
+import './VarEditor.css';
 
 
 const initialState = {
@@ -12,21 +14,21 @@ const initialState = {
   correlationFactor: '',
   formIsValid: false,
   modalTitle: 'Add Variable',
+  show: false,
+  submitBtnText: 'Save Variable',
+  varId: '',
   varMethod: '',
   varMethodDropdownIsOpen: false,
   varName: '',
   varTitle: '',
   varType: '',
   varTypeDropdownIsOpen: false,
-  varValueFunction: '',
+  varValue: '',
+  varValue0: '',
   varValueHigh: '',
   varValueLow: '',
   varValueMid: '',
-  varId: '',
-  show: false,
-  submitBtnText: 'Save Variable',
 }
-
 
 /**
  * VarEditor component
@@ -67,7 +69,7 @@ export default class VarEditor extends Component {
         varTitle: variable && variable.title || '',
         varType: variable && variable.type || '',
         varValue: variable && variable.value || '',
-        varValueFunction: variable && variable.method === 'function' ? variable.value : '',
+        varValue0: variable && DISCRETE_DIST_VALUES.includes(variable.method) ? variable.value : '',
         varValueLow: variable && variable.method !== 'function' ? variable.value.split(' ')[0] : '',
         varValueMid: variable && variable.method !== 'function' ? variable.value.split(' ')[1] : '',
         varValueHigh: variable && variable.method !== 'function' ? variable.value.split(' ')[2] : '',
@@ -89,9 +91,9 @@ export default class VarEditor extends Component {
     const value = target.value;
     const name = target.name;
     this.setState({ [name]: value }, () => {
-      const { varValueLow, varValueMid, varValueHigh, varValueFunction, varType } = this.state;
-      if (varType === 'function') {
-        this.setState({ varValue: `${varValueFunction}` })
+      const { varValueLow, varValueMid, varValueHigh, varValue0, varMethod } = this.state;
+      if (DISCRETE_DIST_VALUES.includes(varMethod)) {
+        this.setState({ varValue: `${varValue0}` })
       } else {
         this.setState({ varValue: `${varValueLow} ${varValueMid} ${varValueHigh}` })
       }
@@ -132,6 +134,7 @@ export default class VarEditor extends Component {
       'varName',
       'varTitle',
       'varType',
+      'varValue',
     ]
     // TODO:
     // validata 'varValue' properly
@@ -248,7 +251,7 @@ export default class VarEditor extends Component {
           </button>
           {this.state.varType ?
             <div
-              className="dropdown-menu w-100"
+              className="dropdown-menu w-100 dropdown-menu--scrollbale"
               style={{ 'display': this.state.varMethodDropdownIsOpen ? 'block' : 'none' }}
             >
               {
@@ -283,17 +286,24 @@ export default class VarEditor extends Component {
   }
 
   renderValueInput() {
-    if (this.state.varMethod === 'function') {
+
+    const methodPlaceholderMap = {
+      'function': "Function Expression",
+      'binomial': "Probability (between 0 and 1)",
+      'bernoulli': "Probability (between 0 and 1)",
+    }
+
+    if (DISCRETE_DIST_VALUES.includes(this.state.varMethod)) {
       return (
         <div className="form-group">
-          <label htmlFor="varValueFunction">Value</label>
+          <label htmlFor="varValue0">Value</label>
           <input
             type="string"
-            name="varValueFunction"
-            id="varValueFunction"
-            placeholder="Function Expression"
+            name="varValue0"
+            id="varValue0"
+            placeholder={methodPlaceholderMap[this.state.varMethod]}
             onChange={this.handleValueInputChange}
-            value={this.state.varValueFunction}
+            value={this.state.varValue0}
             className="form-control"
             disabled={this.state.varMethod ? false : true}
           />
@@ -455,7 +465,7 @@ export default class VarEditor extends Component {
   }
 
   render() {
-    return (
+      return (
       <div>
         <div
           className={"modal fade" + (this.state.show ? ' show' : '')}
