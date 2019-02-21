@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { pick } from 'ramda';
 
-import { DISCRETE_DIST_VALUES, TYPE_METHOD_MAP } from "../../constants";
 import './VarEditor.css';
 
 
