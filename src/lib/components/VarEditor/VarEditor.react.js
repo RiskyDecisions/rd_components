@@ -69,7 +69,7 @@ export default class VarEditor extends Component {
         varTitle: variable && variable.title || '',
         varType: variable && variable.type || '',
         varValue: variable && variable.value || '',
-        varValue0: variable && DISCRETE_DIST_VALUES.concat(['function']).includes(variable.method) ? variable.value : '',
+        varValue0: variable && ['constant', 'binomial', 'bernoulli', 'function'].includes(variable.method) ? variable.value : '',
         varValueLow: variable && variable.method !== 'function' ? variable.value.split(' ')[0] : '',
         varValueMid: variable && variable.method !== 'function' ? variable.value.split(' ')[1] : '',
         varValueHigh: variable && variable.method !== 'function' ? variable.value.split(' ')[2] : '',
@@ -92,7 +92,7 @@ export default class VarEditor extends Component {
     const name = target.name;
     this.setState({ [name]: value }, () => {
       const { varValueLow, varValueMid, varValueHigh, varValue0, varMethod } = this.state;
-      if (DISCRETE_DIST_VALUES.includes(varMethod)) {
+      if (['constant', 'binomial', 'bernoulli', 'function'].includes(varMethod)) {
         this.setState({ varValue: `${varValue0}` })
       } else {
         this.setState({ varValue: `${varValueLow} ${varValueMid} ${varValueHigh}` })
@@ -293,7 +293,7 @@ export default class VarEditor extends Component {
       'bernoulli': "Probability (between 0 and 1)",
     }
 
-    if (DISCRETE_DIST_VALUES.concat(['function']).includes(this.state.varMethod)) {
+    if (['constant', 'binomial', 'bernoulli', 'function'].includes(this.state.varMethod)) {
       return (
         <div className="form-group">
           <label htmlFor="varValue0">Value</label>

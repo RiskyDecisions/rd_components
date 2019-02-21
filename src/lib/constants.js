@@ -101,5 +101,3 @@ export const TYPE_METHOD_MAP = {
       ]
   }
 }
-
-export const DISCRETE_DIST_VALUES = TYPE_METHOD_MAP.variable['Discrete Distributions'].map(x => x.value)
