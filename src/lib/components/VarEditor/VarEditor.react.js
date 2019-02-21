@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { pick } from 'ramda';
 
 import './VarEditor.css';
-
+import { TYPE_METHOD_MAP } from '../../constants';
 
 const initialState = {
   correlate: false,
