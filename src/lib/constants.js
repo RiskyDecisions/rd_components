@@ -1,103 +1,102 @@
 export const TYPE_METHOD_MAP = {
-  'variable': {
-    "Discrete Distributions": [
+  timeseries: {
+    Profiles: [
       {
-        "name": "Constant",
-        "value": "constant"
+        name: "Rectangle",
+        value: "rectangle"
       },
       {
-        "name": "Binomial",
-        "value": "binomial"
+        name: "Timeseries",
+        value: "timeseries"
       },
       {
-        "name": "Bernoulli",
-        "value": "bernoulli"
-      },
-    ],
-    "Continuous Distributions": [
-      {
-        "name": "Normal",
-        "value": "normal"
+        name: "Timefunction",
+        value: "timefunction"
       },
       {
-        "name": "Lognormal",
-        "value": "lognormal"
+        name: "Linear build-up",
+        value: "buildup_linear"
       },
       {
-        "name": "Pert",
-        "value": "pert"
+        name: "Exponential build-up",
+        value: "buildup_exp"
       },
       {
-        "name": "Uniform",
-        "value": "uniform"
+        name: "Linear decline/dropoff",
+        value: "decline_linear"
       },
       {
-        "name": "Beta",
-        "value": "beta"
+        name: "Exponential decline/dropoff",
+        value: "decline_exp"
       },
       {
-        "name": "Gamma",
-        "value": "gamma"
-      },
-      {
-        "name": "Exponential",
-        "value": "exponential"
-      },
-      {
-        "name": "Logistic",
-        "value": "logistic"
-      },
-      {
-        "name": "Pareto",
-        "value": "pareto"
-      }
-    ],
-    "Functions": [
-      {
-        "name": "Exact Function",
-        "value": "function"
-      },
-      {
-        "name": "Algorithm (with uncertainty on the expression itself)",
-        "value": "algorithm"
+        name: "Look-up table",
+        value: "lookup_table"
       }
     ]
   },
-  'timeseries': {
-    'Profiles':
-      [
-        {
-          "value": 'rectangle',
-          "name": 'Rectangle',
-        },
-        {
-          "value": 'timeseries',
-          "name": 'Timeseries',
-        },
-        {
-          "value": 'timefunction',
-          "name": 'Timefunction',
-        },
-        {
-          "value": 'buildup_linear',
-          "name": 'Linear build-up',
-        },
-        {
-          "value": 'buildup_exp',
-          "name": 'Exponential build-up',
-        },
-        {
-          "value": 'decline_linear',
-          "name": 'Linear decline/dropoff',
-        },
-        {
-          "value": 'decline_exp',
-          "name": 'Exponential decline/dropoff',
-        },
-        {
-          "value": 'lookup_table',
-          "name": 'Look-up table',
-        },
-      ]
+  variable: {
+    "Continuous Distributions": [
+      {
+        name: "Normal",
+        value: "normal"
+      },
+      {
+        name: "Lognormal",
+        value: "lognormal"
+      },
+      {
+        name: "Pert",
+        value: "pert"
+      },
+      {
+        name: "Uniform",
+        value: "uniform"
+      },
+      {
+        name: "Beta",
+        value: "beta"
+      },
+      {
+        name: "Gamma",
+        value: "gamma"
+      },
+      {
+        name: "Exponential",
+        value: "exponential"
+      },
+      {
+        name: "Logistic",
+        value: "logistic"
+      },
+      {
+        name: "Pareto",
+        value: "pareto"
+      }
+    ],
+    "Discrete Distributions": [
+      {
+        name: "Constant",
+        value: "constant"
+      },
+      {
+        name: "Binomial",
+        value: "binomial"
+      },
+      {
+        name: "Bernoulli",
+        value: "bernoulli"
+      }
+    ],
+    Functions: [
+      {
+        name: "Exact Function",
+        value: "function"
+      },
+      {
+        name: "Algorithm (with uncertainty on the expression itself)",
+        value: "algorithm"
+      }
+    ]
   }
 }
