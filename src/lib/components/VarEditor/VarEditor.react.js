@@ -188,7 +188,6 @@ export default class VarEditor extends Component {
     }
 
     if (this.props.setProps && this.formIsValid()) {
-      console.log('varData: ', varData);
       this.props.setProps({
         submit_timestamp: Date.now(),
         data: varData
