@@ -3,3 +3,8 @@
   max-height: 200px;
   overflow-x: hidden;
 }
+
+.VarEditor .modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}

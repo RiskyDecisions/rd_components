@@ -1,4 +1,68 @@
 export const TYPE_METHOD_MAP = {
+  riskVariable: {
+    "Continuous Distributions": [
+      {
+        name: "Risked Normal",
+        value: "normal"
+      },
+      {
+        name: "Risked Lognormal",
+        value: "lognormal"
+      },
+      {
+        name: "Risked Pert",
+        value: "pert"
+      },
+      {
+        name: "Risked Uniform",
+        value: "uniform"
+      },
+      {
+        name: "Risked Beta",
+        value: "beta"
+      },
+      {
+        name: "Risked Gamma",
+        value: "gamma"
+      },
+      {
+        name: "Risked Exponential",
+        value: "exponential"
+      },
+      {
+        name: "Risked Logistic",
+        value: "logistic"
+      },
+      {
+        name: "Risked Pareto",
+        value: "pareto"
+      }
+    ],
+    "Discrete Distributions": [
+      {
+        name: "Risked Constant",
+        value: "constant"
+      },
+      {
+        name: "Risked Binomial",
+        value: "binomial"
+      },
+      {
+        name: "Risked Bernoulli",
+        value: "bernoulli"
+      }
+    ],
+    Functions: [
+      {
+        name: "Risked Exact Function",
+        value: "function"
+      },
+      {
+        name: "Risked Algorithm (with uncertainty on the expression itself)",
+        value: "algorithm"
+      }
+    ]
+  },
   timeseries: {
     Profiles: [
       {

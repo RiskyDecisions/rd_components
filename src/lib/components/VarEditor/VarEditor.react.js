@@ -27,6 +27,7 @@ const initialState = {
   varValueHigh: '',
   varValueLow: '',
   varValueMid: '',
+  varValueProbability: '',
 }
 
 /**
@@ -54,26 +55,83 @@ export default class VarEditor extends Component {
   componentWillReceiveProps(newProps) {
     // Show component if props.data contains new timestamp
     if (newProps.data.timestamp !== this.props.data.timestamp) {
+
       const variable = newProps.data.variable;
+
+      // If no var just show the editor
+      if (!variable) {
+        this.setState({
+          show: true,
+          modalTitle: 'Add Variable',
+          submitBtnText: 'Save Variable',
+        });
+        return;
+      }
+
+      // If a variable is passed, set all the values so we can edit
+      const parsedValues = this.parseIncomingValue(variable.type, variable.method, variable.value);
+
       this.setState({
         show: true,
-        correlate: variable && variable.correlation !== '' ? true : false,
-        correlatedTo: variable && variable.correlation || '',
-        correlationFactor: variable && variable.factor || '',
-        modalTitle: variable ? 'Edit Variable' : 'Add Variable',
-        submitBtnText: variable ? 'Update Variable' : 'Save Variable',
-        varId: variable && variable.id || '',
-        varMethod: variable && variable.method || '',
-        varName: variable && variable.name || '',
-        varTitle: variable && variable.title || '',
-        varType: variable && variable.type || '',
-        varValue: variable && variable.value || '',
-        varValue0: variable && ['constant', 'binomial', 'bernoulli', 'function'].includes(variable.method) ? variable.value : '',
-        varValueLow: variable && variable.method !== 'function' ? variable.value.split(' ')[0] : '',
-        varValueMid: variable && variable.method !== 'function' ? variable.value.split(' ')[1] : '',
-        varValueHigh: variable && variable.method !== 'function' ? variable.value.split(' ')[2] : '',
+        correlate: variable.correlation !== '' ? true : false,
+        correlatedTo: variable.correlation || '',
+        correlationFactor: variable.factor || '',
+        modalTitle: 'Edit Variable',
+        submitBtnText: 'Update Variable',
+        varId: variable.id || '',
+        varMethod: variable.method || '',
+        varName: variable.name || '',
+        varTitle: variable.title || '',
+        varType: variable.type || '',
+        varValue: variable.value || '',
+        varValueProbability: parsedValues.varValueProbability || '',
+        varValue0: parsedValues.varValue0 || '',
+        varValueLow: parsedValues.varValueLow || '',
+        varValueMid: parsedValues.varValueMid || '',
+        varValueHigh: parsedValues.varValueHigh || '',
       });
     }
+  }
+
+  parseIncomingValue(varType, varMethod, varValue) {
+
+    let value = varValue;
+    let varValue0 = '';
+    let varValueLow = '';
+    let varValueMid = '';
+    let varValueHigh = '';
+    let varValueProbability = '';
+
+    // Fist check if it is a risk variable to extract probability
+    if (varType === 'riskVariable') {
+      const valList = varValue.split(/\s+/);
+      varValueProbability = valList[0];
+      value = valList.slice(1).join(' ');
+    } else {
+      varValueProbability = '';
+    }
+
+    if (varType !== 'function') {
+      const valList = value.split(/\s+/);
+      varValueLow = valList[0];
+      varValueMid = valList[1];
+      varValueHigh = valList[2];
+    }
+
+    if (['constant', 'binomial', 'bernoulli', 'function'].includes(varMethod)) {
+      varValue0 = value;
+    }
+
+    const ret = {
+      varValue0: varValue0,
+      varValueLow: varValueLow,
+      varValueMid: varValueMid,
+      varValueHigh: varValueHigh,
+      varValueProbability: varValueProbability,
+    }
+
+    return ret;
+
   }
 
   handleInputChange(event) {
@@ -90,11 +148,27 @@ export default class VarEditor extends Component {
     const value = target.value;
     const name = target.name;
     this.setState({ [name]: value }, () => {
-      const { varValueLow, varValueMid, varValueHigh, varValue0, varMethod } = this.state;
+      const {
+        varMethod,
+        varValue0,
+        varValueHigh,
+        varValueLow,
+        varValueMid,
+        varValueProbability
+      } = this.state;
       if (['constant', 'binomial', 'bernoulli', 'function'].includes(varMethod)) {
-        this.setState({ varValue: `${varValue0}` })
+        let varValue = `${varValue0}`;
+        // If varType is a risk variable we must append the probability
+        varValue = this.state.varType === 'riskVariable'
+          ? `${varValueProbability} ${varValue}`
+          : `${varValue}`;
+        this.setState({ varValue: varValue })
       } else {
-        this.setState({ varValue: `${varValueLow} ${varValueMid} ${varValueHigh}` })
+        let varValue = `${varValueLow} ${varValueMid} ${varValueHigh}`;
+        varValue = this.state.varType === 'riskVariable'
+          ? `${varValueProbability} ${varValue}`
+          : `${varValue}`;
+        this.setState({ varValue: varValue })
       }
     });
   }
@@ -114,6 +188,7 @@ export default class VarEditor extends Component {
     }
 
     if (this.props.setProps && this.formIsValid()) {
+      console.log('varData: ', varData);
       this.props.setProps({
         submit_timestamp: Date.now(),
         data: varData
@@ -145,7 +220,23 @@ export default class VarEditor extends Component {
         isValid = false;
       }
     }
+
+    // Validate riskVariable
+    if (
+      this.state.varType === 'riskVariable'
+      && !this.valueProbabilityIsValid()) {
+      return false;
+    }
+
     return isValid;
+  }
+
+  valueProbabilityIsValid() {
+    const v = parseFloat(this.state.varValueProbability, 10);
+    if (v > 0 && v < 1) {
+      return true;
+    }
+    return false;
   }
 
   toggle(attr) {
@@ -207,6 +298,7 @@ export default class VarEditor extends Component {
             style={{ 'display': this.state.varTypeDropdownIsOpen ? 'block' : 'none' }}
           >
             <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('variable')}>Variable</a>
+            <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('riskVariable')}>Risk Variable</a>
             <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('timeseries')}>Timeseries</a>
           </div>
         </div>
@@ -237,6 +329,7 @@ export default class VarEditor extends Component {
   }
 
   renderMethodDropdown() {
+
     return (
       <div className="form-group">
         <label htmlFor="varMethod">Method</label>
@@ -282,6 +375,29 @@ export default class VarEditor extends Component {
         </div>
       </div>
     )
+  }
+
+  renderProbabilityInput() {
+    if (this.state.varType === 'riskVariable') {
+      return (
+        <div className="form-group">
+          <label htmlFor="varValueProbability">Probability (between 0 and 1)</label>
+          <input
+            min="0"
+            max="1"
+            step=".1"
+            type="number"
+            name="varValueProbability"
+            id="varValueProbability"
+            placeholder='Probability of event'
+            onChange={this.handleValueInputChange}
+            value={this.state.varValueProbability}
+            className="form-control"
+          />
+        </div>
+      )
+    }
+    return null;
   }
 
   renderValueInput() {
@@ -464,7 +580,7 @@ export default class VarEditor extends Component {
   }
 
   render() {
-      return (
+    return (
       <div>
         <div
           className={"modal fade" + (this.state.show ? ' show' : '')}
@@ -472,10 +588,10 @@ export default class VarEditor extends Component {
           role="dialog"
           style={{ "display": (this.state.show ? 'block' : 'none') }}
         >
-          <div className="modal-dialog" role="document">
+          <div className="VarEditor modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">{ this.state.modalTitle }</h5>
+                <h5 className="modal-title">{this.state.modalTitle}</h5>
                 <button type="button" className="close" onClick={this.close} aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -485,6 +601,7 @@ export default class VarEditor extends Component {
                 {this.renderNameInput()}
                 {this.renderTypeDropdown()}
                 {this.renderMethodDropdown()}
+                {this.renderProbabilityInput()}
                 {this.renderValueInput()}
                 {this.renderCorrelate()}
               </div>
