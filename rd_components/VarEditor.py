@@ -7,27 +7,44 @@ class VarEditor(Component):
     """A VarEditor component.
 VarEditor component
 
+This component will be shown whenever a new timestamp
+is passed via props data object.
+
 Keyword arguments:
 - id (string; optional): The ID used to identify this component in Dash callbacks
 - className (string; optional): ClassName
-- data (optional): Data. data has the following type: dict containing keys 'id', 'module_id', 'variables'.
+- data (optional): Data
+
+moduleId: which module to add var to
+variables: array with all project vars
+timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'moduleId', 'variables', 'timestamp', 'variable'.
 Those keys have the following types:
   - id (number; optional)
-  - module_id (number; optional)
-  - variables (list; required)
-- n_clicks_timestamp (number; optional): An integer that represents the time (in ms since 1970)
+  - moduleId (number; optional)
+  - variables (list; optional)
+  - timestamp (number; optional)
+  - variable (optional): . variable has the following type: dict containing keys 'correlation', 'factor', 'id', 'method', 'name', 'title', 'type', 'value'.
+Those keys have the following types:
+  - correlation (string; optional)
+  - factor (string; optional)
+  - id (string; optional)
+  - method (string; optional)
+  - name (string; optional)
+  - title (string; optional)
+  - type (string; optional)
+  - value (string; optional)
+- submit_timestamp (number; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.
 - placeholder (string; optional): Placeholder
-- show (boolean; optional): Should the element be shown
 - style (dict; optional): Defines CSS styles which will override styles previously set."""
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, data=Component.UNDEFINED, n_clicks_timestamp=Component.UNDEFINED, placeholder=Component.UNDEFINED, show=Component.UNDEFINED, style=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'className', 'data', 'n_clicks_timestamp', 'placeholder', 'show', 'style']
+    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, data=Component.UNDEFINED, submit_timestamp=Component.UNDEFINED, placeholder=Component.UNDEFINED, style=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'className', 'data', 'submit_timestamp', 'placeholder', 'style']
         self._type = 'VarEditor'
         self._namespace = 'rd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'className', 'data', 'n_clicks_timestamp', 'placeholder', 'show', 'style']
+        self.available_properties = ['id', 'className', 'data', 'submit_timestamp', 'placeholder', 'style']
         self.available_wildcard_properties =            []
 
         _explicit_args = kwargs.pop('_explicit_args')
