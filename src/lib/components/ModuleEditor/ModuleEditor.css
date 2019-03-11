@@ -1,0 +1,10 @@
+.dropdown-menu--scrollbale {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.ModuleEditor .modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
