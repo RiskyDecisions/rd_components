@@ -95,7 +95,7 @@ export default class VarEditor extends Component {
 
   parseIncomingValue(varType, varMethod, varValue) {
 
-    let value = varValue;
+    let value = varValue.toString();
     let varValue0 = '';
     let varValueLow = '';
     let varValueMid = '';
@@ -104,7 +104,7 @@ export default class VarEditor extends Component {
 
     // Fist check if it is a risk variable to extract probability
     if (varType === 'riskVariable') {
-      const valList = varValue.split(/\s+/);
+      const valList = value.split(/\s+/);
       varValueProbability = valList[0];
       value = valList.slice(1).join(' ');
     } else {
