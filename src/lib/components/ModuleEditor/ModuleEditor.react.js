@@ -37,79 +37,18 @@ export default class ModuleEditor extends Component {
   componentWillReceiveProps(newProps) {
     // Show component if props.data contains new timestamp
     if (newProps.data.timestamp !== this.props.data.timestamp) {
-
-      // // const module = newProps.data.module;
-
-      // // If no module passed just show the editor
-      // if (!module) {
-      //   this.setState({
-      //     show: true,
-      //     id: newProps.data.id,
-      //     project_id: newProps.data.project_id,
-      //     modalTitle: 'Add Module',
-      //     submitBtnText: 'Save Module',
-      //   });
-      //   return;
-      // }
-
       const { id, project_id, name, description, include_in_report } = newProps.data;
-
-      // const name = newProps.data.name || '';
-      // const description = newProps.data.description || '';
-      // const include_in_report = newProps.data.include_in_report || true;
-
       this.setState({
         id: id,
         name: name || '',
         description: description || '',
         include_in_report: include_in_report || true,
         project_id: project_id,
-        modalTitle: name ? 'Edit Module': 'Add Module',
-        submitBtnText: name ? 'Update Module': 'Save Module',
+        modalTitle: id ? 'Edit Module': 'Add Module',
+        submitBtnText: id ? 'Update Module': 'Save Module',
         show: true,
       });
     }
-  }
-
-  parseIncomingValue(varType, varMethod, varValue) {
-
-    let value = varValue;
-    let varValue0 = '';
-    let varValueLow = '';
-    let varValueMid = '';
-    let varValueHigh = '';
-    let varValueProbability = '';
-
-    // Fist check if it is a risk variable to extract probability
-    if (varType === 'riskVariable') {
-      const valList = varValue.split(/\s+/);
-      varValueProbability = valList[0];
-      value = valList.slice(1).join(' ');
-    } else {
-      varValueProbability = '';
-    }
-
-    if (varType !== 'function') {
-      const valList = value.split(/\s+/);
-      varValueLow = valList[0];
-      varValueMid = valList[1];
-      varValueHigh = valList[2];
-    }
-
-    if (['constant', 'binomial', 'bernoulli', 'function'].includes(varMethod)) {
-      varValue0 = value;
-    }
-
-    const ret = {
-      varValue0: varValue0,
-      varValueLow: varValueLow,
-      varValueMid: varValueMid,
-      varValueHigh: varValueHigh,
-      varValueProbability: varValueProbability,
-    }
-
-    return ret;
-
   }
 
   handleInputChange(event) {
@@ -121,23 +60,22 @@ export default class ModuleEditor extends Component {
     });
   }
 
-  handleValueInputChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-    this.setState({ [name]: value });
-  }
-
   submit() {
     const moduleData = {
-      id: this.state.id,
       project_id: this.props.data.project_id,
       name: this.state.name,
       timestamp: this.props.data.timestamp,
       description: this.state.description,
       include_in_report: this.state.include_in_report,
+      image_url: this.state.image_url,
     }
-    console.log('moduleData: ', moduleData);
+
+    // If there is an id pass it back.
+    // Returning no id from ModuleEditor signals we
+    // are adding a new module.
+    if (this.state.id) {
+      moduleData.id = this.state.id;
+    }
 
     if (this.props.setProps && this.formIsValid()) {
       this.props.setProps({
@@ -156,7 +94,6 @@ export default class ModuleEditor extends Component {
     let isValid = true;
     const varsToVerify = [
       'name',
-      'id',
       'project_id',
     ]
     // TODO:
@@ -307,7 +244,7 @@ ModuleEditor.propTypes = {
    * timestamp: must pass a new timestamp to show the component
    */
   data: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
     project_id: PropTypes.number.isRequired,
     timestamp: PropTypes.number.isRequired,
     image_url: PropTypes.string,
