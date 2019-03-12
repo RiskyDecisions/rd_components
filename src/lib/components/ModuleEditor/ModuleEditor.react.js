@@ -45,16 +45,21 @@ export default class ModuleEditor extends Component {
         include_in_report,
         image_url
       } = newProps.data;
+
+      console.log('newProps.data: ', newProps.data);
+
       this.setState({
         id: id,
         name: name || '',
         description: description || '',
-        include_in_report: include_in_report || true,
+        include_in_report: include_in_report,
         image_url: image_url || '',
         project_id: project_id,
         modalTitle: id ? 'Edit Module': 'Add Module',
         submitBtnText: id ? 'Update Module': 'Save Module',
         show: true,
+      }, () => {
+        console.log('this.state: ', this.state);
       });
     }
   }
