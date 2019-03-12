@@ -37,12 +37,20 @@ export default class ModuleEditor extends Component {
   componentWillReceiveProps(newProps) {
     // Show component if props.data contains new timestamp
     if (newProps.data.timestamp !== this.props.data.timestamp) {
-      const { id, project_id, name, description, include_in_report } = newProps.data;
+      const {
+        id,
+        project_id,
+        name,
+        description,
+        include_in_report,
+        image_url
+      } = newProps.data;
       this.setState({
         id: id,
         name: name || '',
         description: description || '',
         include_in_report: include_in_report || true,
+        image_url: image_url || '',
         project_id: project_id,
         modalTitle: id ? 'Edit Module': 'Add Module',
         submitBtnText: id ? 'Update Module': 'Save Module',
