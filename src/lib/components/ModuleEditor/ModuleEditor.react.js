@@ -46,20 +46,16 @@ export default class ModuleEditor extends Component {
         image_url
       } = newProps.data;
 
-      console.log('newProps.data: ', newProps.data);
-
       this.setState({
         id: id,
         name: name || '',
         description: description || '',
-        include_in_report: include_in_report,
+        include_in_report: include_in_report === false ? false : true,
         image_url: image_url || '',
         project_id: project_id,
         modalTitle: id ? 'Edit Module': 'Add Module',
         submitBtnText: id ? 'Update Module': 'Save Module',
         show: true,
-      }, () => {
-        console.log('this.state: ', this.state);
       });
     }
   }
@@ -252,8 +248,6 @@ ModuleEditor.propTypes = {
   /**
    * Data
    *
-   * moduleId: which module to add var to
-   * variables: array with all project vars
    * timestamp: must pass a new timestamp to show the component
    */
   data: PropTypes.shape({

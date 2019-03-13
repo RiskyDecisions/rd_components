@@ -15,8 +15,6 @@ Keyword arguments:
 - className (string; optional): ClassName
 - data (optional): Data
 
-moduleId: which module to add var to
-variables: array with all project vars
 timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'project_id', 'timestamp', 'image_url', 'name', 'description', 'include_in_report'.
 Those keys have the following types:
   - id (number; optional)
