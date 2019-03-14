@@ -15,7 +15,7 @@ Keyword arguments:
 - className (string; optional): ClassName
 - data (optional): Data
 
-timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'project_id', 'timestamp', 'image_url', 'name', 'description', 'include_in_report'.
+timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'project_id', 'timestamp', 'image_url', 'name', 'description', 'include_in_report', 'nameInputDisabled'.
 Those keys have the following types:
   - id (number; optional)
   - project_id (number; required)
@@ -24,6 +24,7 @@ Those keys have the following types:
   - name (string; optional)
   - description (string; optional)
   - include_in_report (boolean; optional)
+  - nameInputDisabled (boolean; optional)
 - submit_timestamp (number; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.

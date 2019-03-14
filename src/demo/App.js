@@ -29,7 +29,7 @@ class App extends Component {
   }
 
   addModule() {
-    this.setState({ moduleEditorData: { project_id: 1, id: 10, timestamp: Date.now() } })
+    this.setState({ moduleEditorData: { project_id: 1, id: 10, timestamp: Date.now(), nameInputDisabled: true } })
   }
 
   render() {

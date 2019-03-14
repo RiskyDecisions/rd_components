@@ -13,6 +13,7 @@ const initialState = {
   project_id: null,
   show: false,
   include_in_report: true,
+  nameInputDisabled: false
 }
 
 /**
@@ -43,7 +44,8 @@ export default class ModuleEditor extends Component {
         name,
         description,
         include_in_report,
-        image_url
+        image_url,
+        nameInputDisabled
       } = newProps.data;
 
       this.setState({
@@ -56,6 +58,7 @@ export default class ModuleEditor extends Component {
         modalTitle: id ? 'Edit Module': 'Add Module',
         submitBtnText: id ? 'Update Module': 'Save Module',
         show: true,
+        nameInputDisabled: nameInputDisabled === true ? true : false
       });
     }
   }
@@ -120,9 +123,14 @@ export default class ModuleEditor extends Component {
   }
 
   renderDescriptionInput() {
+    const helpStyle = {
+      display: 'block',
+      margin: '-8px 0 4px'
+    }
     return (
       <div className="form-group">
         <label htmlFor="description">Description</label>
+        <small style={helpStyle}><a href="https://commonmark.org/help/" target="_blank">(You can use markdown to format the text)</a></small>
         <textarea
           type="string"
           name="description"
@@ -149,6 +157,7 @@ export default class ModuleEditor extends Component {
           onChange={this.handleInputChange}
           value={this.state.name}
           className="form-control"
+          disabled={this.state.nameInputDisabled}
         />
       </div>
     )
@@ -258,6 +267,7 @@ ModuleEditor.propTypes = {
     name: PropTypes.string,
     description: PropTypes.string,
     include_in_report: PropTypes.bool,
+    nameInputDisabled: PropTypes.bool
   }),
 
   /**
