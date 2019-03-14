@@ -232,7 +232,7 @@ export default class VarEditor extends Component {
 
   valueProbabilityIsValid() {
     const v = parseFloat(this.state.varValueProbability.replace(',', '.'), 10);
-    if (v > 0 && v < 1) {
+    if (v >= 0 && v <= 1) {
       return true;
     }
     return false;
