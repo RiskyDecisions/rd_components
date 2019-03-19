@@ -85,7 +85,7 @@ export default class ModuleEditor extends Component {
     // If there is an id pass it back.
     // Returning no id from ModuleEditor signals we
     // are adding a new module.
-    if (this.state.id) {
+    if (this.state.id !== null) {
       moduleData.id = this.state.id;
     }
 
