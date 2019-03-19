@@ -182,7 +182,7 @@ export default class VarEditor extends Component {
       module_id: this.props.data.moduleId,
       name: this.state.varName.split(' ').join('_').toLowerCase(),
       type: this.state.varType,
-      value: this.state.varValue.replace(',', '.'),
+      value: this.state.varValue,
       timestamp: this.props.data.timestamp,
       title: this.state.varTitle,
     }
