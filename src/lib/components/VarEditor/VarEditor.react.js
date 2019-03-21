@@ -166,14 +166,16 @@ export default class VarEditor extends Component {
 
       // Set the output value (i.e. varValue) based on varMethod
       let varValue = '';
-      METHOD_VALUE_INPUT_MAP[varMethod].map((v, i) => {
-        varValue += this.state[`varValue${i}`] + ' ';
-      })
 
       // if its a risk variable to need to add probability
       if (varType === 'riskVariable') {
         varValue += varValueProbability;
       }
+
+      METHOD_VALUE_INPUT_MAP[varMethod].map((v, i) => {
+        varValue += ' ' + this.state[`varValue${i}`] ;
+      })
+
       this.setState({ varValue })
     });
   }
