@@ -88,60 +88,18 @@ export default class VarEditor extends Component {
 
       // Split the string value
       // valList could have a length from 1 to 4
-      const valList = variable.value.split(/\s+/);
-
+      const valList = variable.value.trim().split(/\s+/);
       // If the variable is a riskVariale index 0 in valList is the probability
       if (variable.type === 'riskVariable') {
         const propability = valList.shift();
         newState.varValueProbability = propability;
       }
 
-      valList.map((v, i ) => {
+      valList.map((v, i) => {
         newState[`varValue${i}`] = v;
       });
       this.setState(newState);
     }
-  }
-
-  parseIncomingValue(varType, varMethod, varValue) {
-
-    let value = varValue.toString();
-    let varValue0 = '';
-    let varValueLow = '';
-    let varValueMid = '';
-    let varValueHigh = '';
-    let varValueProbability = '';
-
-    // Fist check if it is a risk variable to extract probability
-    if (varType === 'riskVariable') {
-      const valList = value.split(/\s+/);
-      varValueProbability = valList[0];
-      value = valList.slice(1).join(' ');
-    } else {
-      varValueProbability = '';
-    }
-
-    if (varType !== 'function') {
-      const valList = value.split(/\s+/);
-      varValueLow = valList[0];
-      varValueMid = valList[1];
-      varValueHigh = valList[2];
-    }
-
-    if (['constant', 'binomial', 'bernoulli', 'function'].includes(varMethod)) {
-      varValue0 = value;
-    }
-
-    const ret = {
-      varValue0: varValue0,
-      varValueLow: varValueLow,
-      varValueMid: varValueMid,
-      varValueHigh: varValueHigh,
-      varValueProbability: varValueProbability,
-    }
-
-    return ret;
-
   }
 
   handleInputChange(event) {
@@ -173,7 +131,7 @@ export default class VarEditor extends Component {
       }
 
       METHOD_VALUE_INPUT_MAP[varMethod].map((v, i) => {
-        varValue += ' ' + this.state[`varValue${i}`] ;
+        varValue += ' ' + this.state[`varValue${i}`];
       })
 
       this.setState({ varValue })
@@ -490,7 +448,7 @@ export default class VarEditor extends Component {
                   type="button"
                   onClick={() => this.toggle('correlateDropdownIsOpen')}
                 >
-                  {this.state.correlatedTo.name || "(Choose variable to correlate with)"}
+                  {this.state.correlatedTo || "(Choose variable to correlate with)"}
                 </button>
                 <div
                   className="dropdown-menu w-100"

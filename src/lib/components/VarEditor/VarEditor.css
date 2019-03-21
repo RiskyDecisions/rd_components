@@ -6,7 +6,7 @@
 
 .VarEditor .modal-body {
   max-height: calc(100vh - 200px);
-  /* overflow-y: auto; */
+  overflow-y: auto;
 }
 
 .VarEditor .flex-even {
