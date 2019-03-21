@@ -55,8 +55,8 @@ export default class ModuleEditor extends Component {
         include_in_report: include_in_report === false ? false : true,
         image_url: image_url || '',
         project_id: project_id,
-        modalTitle: id ? 'Edit Module': 'Add Module',
-        submitBtnText: id ? 'Update Module': 'Save Module',
+        modalTitle: id ? 'Edit Module': 'Create Module',
+        submitBtnText: id ? 'Update Module': 'Create Module',
         show: true,
         nameInputDisabled: nameInputDisabled === true ? true : false
       });
