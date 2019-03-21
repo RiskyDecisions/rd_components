@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { pick } from 'ramda';
 
 import './VarEditor.css';
-import { TYPE_METHOD_MAP } from '../../constants';
+import { TYPE_METHOD_MAP } from '../../constants/typeMethodMap';
+import { METHOD_VALUE_INPUT_MAP } from '../../constants/methodValueInputMap';
 
 const initialState = {
   correlate: false,
@@ -16,6 +17,7 @@ const initialState = {
   show: false,
   submitBtnText: 'Save Variable',
   varId: '',
+  varDescriptin: '',
   varMethod: '',
   varMethodDropdownIsOpen: false,
   varName: '',
@@ -24,9 +26,8 @@ const initialState = {
   varTypeDropdownIsOpen: false,
   varValue: '',
   varValue0: '',
-  varValueHigh: '',
-  varValueLow: '',
-  varValueMid: '',
+  varValue1: '',
+  varValue2: '',
   varValueProbability: '',
 }
 
@@ -62,16 +63,14 @@ export default class VarEditor extends Component {
       if (!variable) {
         this.setState({
           show: true,
-          modalTitle: 'Add Variable',
-          submitBtnText: 'Save Variable',
+          modalTitle: 'Create Variable',
+          submitBtnText: 'Create Variable',
         });
         return;
       }
 
       // If a variable is passed, set all the values so we can edit
-      const parsedValues = this.parseIncomingValue(variable.type, variable.method, variable.value);
-
-      this.setState({
+      const newState = {
         show: true,
         correlate: variable.correlation !== '' ? true : false,
         correlatedTo: variable.correlation || '',
@@ -79,17 +78,28 @@ export default class VarEditor extends Component {
         modalTitle: 'Edit Variable',
         submitBtnText: 'Update Variable',
         varId: variable.id || '',
+        varDescription: variable.description || '',
         varMethod: variable.method || '',
         varName: variable.name || '',
         varTitle: variable.title || '',
         varType: variable.type || '',
         varValue: variable.value || '',
-        varValueProbability: parsedValues.varValueProbability || '',
-        varValue0: parsedValues.varValue0 || '',
-        varValueLow: parsedValues.varValueLow || '',
-        varValueMid: parsedValues.varValueMid || '',
-        varValueHigh: parsedValues.varValueHigh || '',
+      }
+
+      // Split the string value
+      // valList could have a length from 1 to 4
+      const valList = variable.value.split(/\s+/);
+
+      // If the variable is a riskVariale index 0 in valList is the probability
+      if (variable.type === 'riskVariable') {
+        const propability = valList.shift();
+        newState.varValueProbability = propability;
+      }
+
+      valList.map((v, i ) => {
+        newState[`varValue${i}`] = v;
       });
+      this.setState(newState);
     }
   }
 
@@ -150,26 +160,21 @@ export default class VarEditor extends Component {
     this.setState({ [name]: value }, () => {
       const {
         varMethod,
-        varValue0,
-        varValueHigh,
-        varValueLow,
-        varValueMid,
+        varType,
         varValueProbability
       } = this.state;
-      if (['constant', 'binomial', 'bernoulli', 'function'].includes(varMethod)) {
-        let varValue = `${varValue0}`;
-        // If varType is a risk variable we must append the probability
-        varValue = this.state.varType === 'riskVariable'
-          ? `${varValueProbability} ${varValue}`
-          : `${varValue}`;
-        this.setState({ varValue: varValue })
-      } else {
-        let varValue = `${varValueLow} ${varValueMid} ${varValueHigh}`;
-        varValue = this.state.varType === 'riskVariable'
-          ? `${varValueProbability} ${varValue}`
-          : `${varValue}`;
-        this.setState({ varValue: varValue })
+
+      // Set the output value (i.e. varValue) based on varMethod
+      let varValue = '';
+      METHOD_VALUE_INPUT_MAP[varMethod].map((v, i) => {
+        varValue += this.state[`varValue${i}`] + ' ';
+      })
+
+      // if its a risk variable to need to add probability
+      if (varType === 'riskVariable') {
+        varValue += varValueProbability;
       }
+      this.setState({ varValue })
     });
   }
 
@@ -280,6 +285,24 @@ export default class VarEditor extends Component {
     )
   }
 
+  renderDescriptionInput() {
+    return (
+      <div className="form-group">
+        <label htmlFor="varDescription">Description</label>
+        <input
+          autoFocus
+          type="string"
+          name="varDescription"
+          id="varDescription"
+          placeholder="Description of variable"
+          onChange={this.handleInputChange}
+          value={this.state.varDescription}
+          className="form-control"
+        />
+      </div>
+    )
+  }
+
   renderTypeDropdown() {
     return (
       <div className="form-group">
@@ -328,6 +351,10 @@ export default class VarEditor extends Component {
   }
 
   renderMethodDropdown() {
+
+    if (!this.state.varType) {
+      return null;
+    }
 
     return (
       <div className="form-group">
@@ -379,8 +406,7 @@ export default class VarEditor extends Component {
   renderProbabilityInput() {
     if (this.state.varType === 'riskVariable') {
       return (
-        <div className="form-group">
-          <label htmlFor="varValueProbability">Probability (between 0 and 1)</label>
+        <div className="flex-even">
           <input
             min="0"
             max="1"
@@ -388,7 +414,7 @@ export default class VarEditor extends Component {
             type="number"
             name="varValueProbability"
             id="varValueProbability"
-            placeholder='Probability of event'
+            placeholder='P(event)'
             onChange={this.handleValueInputChange}
             value={this.state.varValueProbability}
             className="form-control"
@@ -399,116 +425,40 @@ export default class VarEditor extends Component {
     return null;
   }
 
+  /**
+   * Render value inputs fields based on varMethod.
+   */
   renderValueInput() {
 
-    const methodPlaceholderMap = {
-      'function': "Function Expression",
-      'binomial': "Probability (between 0 and 1)",
-      'bernoulli': "Probability (between 0 and 1)",
+    if (!this.state.varMethod) {
+      return null;
     }
 
-    if (['constant', 'binomial', 'bernoulli', 'function'].includes(this.state.varMethod)) {
-      return (
-        <div className="form-group">
-          <label htmlFor="varValue0">Value</label>
-          <input
-            type="string"
-            name="varValue0"
-            id="varValue0"
-            placeholder={methodPlaceholderMap[this.state.varMethod]}
-            onChange={this.handleValueInputChange}
-            value={this.state.varValue0}
-            className="form-control"
-            disabled={this.state.varMethod ? false : true}
-          />
-        </div>
-      )
-    }
-    else if (this.state.varType === 'timeseries') {
-      return (
-        <div className="form-group">
-          <label>Value</label>
-          <div className="form-row">
-            <div className="col-sm-4">
-              <input
-                placeholder="Total"
-                type="number"
-                name="varValueLow"
-                id="varValueLow"
-                onChange={this.handleValueInputChange}
-                value={this.state.varValueLow}
-                className="form-control"
-                disabled={this.state.varMethod ? false : true}
-              />
-            </div>
-            <div className="col-sm-4">
-              <input
-                placeholder="Duration"
-                type="number"
-                name="varValueMid"
-                id="varValueMid"
-                onChange={this.handleValueInputChange}
-                value={this.state.varValueMid}
-                className="form-control"
-                disabled={this.state.varMethod ? false : true}
-              />
-            </div>
-            <div className="col-sm-4">
-              <input
-                placeholder="Start"
-                type="number"
-                name="varValueHigh"
-                id="varValueHigh"
-                onChange={this.handleValueInputChange}
-                value={this.state.varValueHigh}
-                className="form-control"
-                disabled={this.state.varMethod ? false : true}
-              />
-            </div>
-          </div>
-        </div>
-      )
-    }
+    const valueInputs = METHOD_VALUE_INPUT_MAP[this.state.varMethod];
+
+    // Generate x number of input fields based on varType
     return (
       <div className="form-group">
         <label>Value</label>
-        <div className="form-row">
-          <div className="col-sm-4">
-            <input
-              placeholder="Low"
-              type="number"
-              name="varValueLow"
-              id="varValueLow"
-              onChange={this.handleValueInputChange}
-              value={this.state.varValueLow}
-              className="form-control"
-              disabled={this.state.varMethod ? false : true}
-            />
-          </div>
-          <div className="col-sm-4">
-            <input
-              placeholder="Mid"
-              type="number"
-              name="varValueMid"
-              id="varValueMid"
-              onChange={this.handleValueInputChange}
-              value={this.state.varValueMid}
-              className="form-control"
-              disabled={this.state.varMethod ? false : true}
-            />
-          </div>
-          <div className="col-sm-4">
-            <input
-              placeholder="High"
-              type="number"
-              name="varValueHigh"
-              id="varValueHigh"
-              onChange={this.handleValueInputChange}
-              value={this.state.varValueHigh}
-              className="form-control"
-              disabled={this.state.varMethod ? false : true}
-            />
-          </div>
+        <div className="d-flex">
+          {this.renderProbabilityInput()}
+          {valueInputs.map((v, i) => {
+            const name = `varValue${i}`;
+            return (
+              <div key={i} className="flex-even">
+                <input
+                  placeholder={v.placeholder}
+                  type={v.type}
+                  name={name}
+                  id={name}
+                  onChange={this.handleValueInputChange}
+                  value={this.state[name]}
+                  className="form-control"
+                />
+              </div>
+            )
+          })
+          }
         </div>
       </div>
     )
@@ -598,9 +548,9 @@ export default class VarEditor extends Component {
               <div className="modal-body">
                 {this.renderTitleInput()}
                 {this.renderNameInput()}
+                {this.renderDescriptionInput()}
                 {this.renderTypeDropdown()}
                 {this.renderMethodDropdown()}
-                {this.renderProbabilityInput()}
                 {this.renderValueInput()}
                 {this.renderCorrelate()}
               </div>

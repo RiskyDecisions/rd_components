@@ -1,6 +1,6 @@
 {
   "name": "rd_components",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "Project Description",
   "main": "build/index.js",
   "scripts": {
