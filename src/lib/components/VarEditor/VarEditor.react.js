@@ -6,6 +6,8 @@ import { pick } from 'ramda';
 import './VarEditor.css';
 import { TYPE_METHOD_MAP } from '../../constants/typeMethodMap';
 import { METHOD_VALUE_INPUT_MAP } from '../../constants/methodValueInputMap';
+import { METHOD_NAME_MAP } from '../../constants/methodNameMap';
+import { TYPE_NAME_MAP } from '../../constants/typeNameMap';
 
 const initialState = {
   correlate: false,
@@ -284,7 +286,7 @@ export default class VarEditor extends Component {
             type="button"
             onClick={() => this.toggle('varTypeDropdownIsOpen')}
           >
-            {this.state.varType || "(Choose variable type)"}
+            { TYPE_NAME_MAP[this.state.varType] || "(Choose variable type)"}
           </button>
           <div
             className="dropdown-menu w-100"
@@ -338,7 +340,7 @@ export default class VarEditor extends Component {
             type="button"
             onClick={() => this.toggle('varMethodDropdownIsOpen')}
           >
-            {this.state.varMethod || "(Choose variable method)"}
+            { METHOD_NAME_MAP[this.state.varMethod] || "(Choose variable method)"}
           </button>
           {this.state.varType ?
             <div
