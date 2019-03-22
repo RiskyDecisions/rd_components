@@ -150,7 +150,11 @@ export const TYPE_METHOD_MAP = {
       {
         name: "Bernoulli",
         value: "bernoulli"
-      }
+      },
+      {
+        name: "Discrete Uniform",
+        value: "uniform_discrete"
+      },
     ],
     Functions: [
       {

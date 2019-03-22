@@ -4,11 +4,13 @@ const lowMidHigh = [
   { type: 'number', placeholder: 'High' },
 ]
 
+const uniform = [
+  { type: 'number', placeholder: 'Min.', },
+  { type: 'number', placeholder: 'Max.', },
+]
+
 export const METHOD_VALUE_INPUT_MAP = {
-  uniform: [
-    { type: 'number', placeholder: 'value0', },
-    { type: 'number', placeholder: 'value1', },
-  ],
+  uniform: uniform,
   algorithm: lowMidHigh,
   bernoulli: lowMidHigh,
   beta: lowMidHigh,
@@ -33,5 +35,6 @@ export const METHOD_VALUE_INPUT_MAP = {
   pert: lowMidHigh,
   rectangle: lowMidHigh,
   timefunction: lowMidHigh,
-  timeseries: lowMidHigh
+  timeseries: lowMidHigh,
+  uniform_discrete: uniform,
 };
