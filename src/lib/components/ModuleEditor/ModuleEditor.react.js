@@ -48,6 +48,9 @@ export default class ModuleEditor extends Component {
         nameInputDisabled
       } = newProps.data;
 
+      console.log('newProps.data: ', newProps.data);
+      console.log('id: ', id);
+
       this.setState({
         id: id,
         name: name || '',
@@ -55,8 +58,10 @@ export default class ModuleEditor extends Component {
         include_in_report: include_in_report === false ? false : true,
         image_url: image_url || '',
         project_id: project_id,
-        modalTitle: id ? 'Edit Module': 'Create Module',
-        submitBtnText: id ? 'Update Module': 'Create Module',
+        // eslint-disable-next-line no-undefined
+        modalTitle: id !== undefined ? 'Edit Module': 'Create Module',
+        // eslint-disable-next-line no-undefined
+        submitBtnText: id !== undefined ? 'Update Module': 'Create Module',
         show: true,
         nameInputDisabled: nameInputDisabled === true ? true : false
       });
