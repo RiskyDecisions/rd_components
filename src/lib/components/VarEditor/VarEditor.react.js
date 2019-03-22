@@ -51,6 +51,7 @@ export default class VarEditor extends Component {
     this.renderTypeDropdown = this.renderTypeDropdown.bind(this);
     this.submit = this.submit.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.resetValues = this.resetValues.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -163,6 +164,16 @@ export default class VarEditor extends Component {
 
   close() {
     this.setState(initialState);
+  }
+
+  resetValues() {
+    this.setState({
+      varValue: '',
+      varValue0: '',
+      varValue1: '',
+      varValue2: '',
+      varValueProbability: '',
+    })
   }
 
   formIsValid() {
@@ -289,6 +300,7 @@ export default class VarEditor extends Component {
   }
 
   handleMethodClick(methodVal) {
+    this.resetValues();
     this.setState({
       varMethod: methodVal,
       varMethodDropdownIsOpen: false,
@@ -296,6 +308,7 @@ export default class VarEditor extends Component {
   }
 
   handleTypeClick(typeVal) {
+    this.resetValues();
     this.setState({
       varType: typeVal,
       varTypeDropdownIsOpen: false,
