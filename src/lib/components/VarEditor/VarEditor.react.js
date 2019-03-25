@@ -61,6 +61,7 @@ export default class VarEditor extends Component {
     if (newProps.data.timestamp !== this.props.data.timestamp) {
 
       const variable = newProps.data.variable;
+      console.log('variable: ', variable);
 
       // If no var just show the editor
       if (!variable) {
@@ -86,7 +87,7 @@ export default class VarEditor extends Component {
         varName: variable.name || '',
         varTitle: variable.title || '',
         varType: variable.type || '',
-        varValue: variable.value || '',
+        varValue: variable.value.trim() || '',
       }
 
       // Split the string value
@@ -137,7 +138,7 @@ export default class VarEditor extends Component {
         varValue += ' ' + this.state[`varValue${i}`];
       })
 
-      this.setState({ varValue })
+      this.setState({ varValue: varValue.trim() })
     });
   }
 
