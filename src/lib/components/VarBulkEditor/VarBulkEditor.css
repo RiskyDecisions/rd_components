@@ -1,0 +1,14 @@
+.dropdown-menu--scrollbale {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.VarBulkEditor .modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.VarBulkEditor .flex-even {
+  flex: 1;
+}

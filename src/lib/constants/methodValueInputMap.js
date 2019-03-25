@@ -1,3 +1,6 @@
+const bernoulli = [{ type: 'number', placeholder: 'Probability' }]
+const constant = [{ type: 'string', placeholder: 'Constant value' }]
+const func = [{ type: 'string', placeholder: 'Function expression' }]
 const lowMidHigh = [
   { type: 'number', placeholder: 'Low' },
   { type: 'number', placeholder: 'Mid' },
@@ -12,20 +15,16 @@ const uniform = [
 export const METHOD_VALUE_INPUT_MAP = {
   uniform: uniform,
   algorithm: lowMidHigh,
-  bernoulli: lowMidHigh,
+  bernoulli: bernoulli,
   beta: lowMidHigh,
   binomial: lowMidHigh,
   buildup_exp: lowMidHigh,
   buildup_linear: lowMidHigh,
-  constant: [
-    { type: 'string', placeholder: 'Constant value'}
-  ],
+  constant: constant,
   decline_exp: lowMidHigh,
   decline_linear: lowMidHigh,
   exponential: lowMidHigh,
-  function: [
-    { type: 'string', placeholder: 'Function expression'}
-  ],
+  function: func,
   gamma: lowMidHigh,
   logistic: lowMidHigh,
   lognormal: lowMidHigh,
