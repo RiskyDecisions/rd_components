@@ -1,6 +1,6 @@
 .VarBulkEditor .form-row {
   padding: 4px;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
   background: lightgray;
   border-radius: .25rem;
 }
@@ -27,8 +27,16 @@
   display: block;
 }
 
+.VarBulkEditor__form-buttons .btn {
+  margin-left: 4px;
+}
+
 .VarBulkEditor .form-row .col:first-child {
   padding-left: 0;
+}
+
+.VarBulkEditor .form-row .col:first-child input {
+  cursor: pointer;
 }
 
 .VarBulkEditor .form-row .col:last-child {

@@ -58,14 +58,14 @@ export default class VarBulkEditor extends Component {
       case 'varValue0':
         inputIndex = 0;
         break;
-      case 'varValueProbability':
-        inputIndex = 0;
-        break;
       case 'varValue1':
         inputIndex = 1;
         break;
       case 'varValue2':
         inputIndex = 2;
+        break;
+      case 'varValue3':
+        inputIndex = 3;
         break;
       default:
         break;
@@ -107,7 +107,11 @@ export default class VarBulkEditor extends Component {
 
   renderVarInputs(variable, rowIndex) {
     // Determine number of input based on its method.
-    const inputs = METHOD_VALUE_INPUT_MAP[variable.method];
+    const inputs = [...METHOD_VALUE_INPUT_MAP[variable.method]];
+    // If its a riskVariable we preprend a prop input
+    if (variable.type === 'riskVariable') {
+      inputs.unshift({ type: 'number', placeholder: 'P(X)' })
+    }
 
     return (
       inputs.map((v, i) => {

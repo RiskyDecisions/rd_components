@@ -7,8 +7,8 @@ export const vars = [
       "method": "pert",
       "name": "rig",
       "title": "Rig Cost (USD/day)",
-      "type": "variable",
-      "value": "50000 100000 150000"
+      "type": "riskVariable",
+      "value": "0.3 50000 100000 150000"
   },
   {
       "module_id": 1,
