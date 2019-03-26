@@ -7,20 +7,15 @@ class VarBulkEditor(Component):
     """A VarBulkEditor component.
 VarBulkEditor component
 
-This component will be shown whenever a new timestamp
-is passed via props data object.
-
 Keyword arguments:
 - id (string; optional): The ID used to identify this component in Dash callbacks
 - className (string; optional): ClassName
 - data (optional): Data
 
-moduleId: which module to add var to
-variables: array with all project vars
-timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'variables', 'timestamp'.
+variables: array with all project vars. data has the following type: dict containing keys 'variables', 'hide'.
 Those keys have the following types:
   - variables (list; optional)
-  - timestamp (number; optional)
+  - hide (boolean; optional)
 - submit_timestamp (number; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.

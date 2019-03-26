@@ -6,29 +6,31 @@ import { METHOD_VALUE_INPUT_MAP } from '../../constants/methodValueInputMap';
 
 /**
  * VarBulkEditor component
- *
- * This component will be shown whenever a new timestamp
- * is passed via props data object.
  */
 export default class VarBulkEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
       variables: [],
-      updatedVariable: []
     }
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.renderVarInputs = this.renderVarInputs.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.doneEditing = this.doneEditing.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    // Show component if props.data contains new timestamp
-    if (newProps.data.timestamp !== this.props.data.timestamp) {
-      const { variables } = newProps.data;
-      if (variables !== this.props.data.variables) {
-        // this.setState({ variables: variables.slice(0, 3) })
-        this.setState({ variables: variables })
-      }
+    const variables = newProps.data ? newProps.data.variables : null;
+    // Only update component if new variables are passed
+    if (variables) {
+      // Create var value inputs states
+      variables.map((variable, varIndex) => {
+        const valList = variable.value.toString().trim().split(' ')
+        valList.map((value, valIndex) => {
+          variables[varIndex][`varValue${valIndex}`] = value
+        });
+      })
+      this.setState({ variables })
     }
   }
 
@@ -36,134 +38,120 @@ export default class VarBulkEditor extends Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    const module_id = target.getAttribute('data-module_id');
-    const id = target.getAttribute('data-id');
     const rowIndex = target.getAttribute('data-row-index');
 
-    console.log('target: ', target);
-    console.log('value: ', value);
-    console.log('name: ', name);
-    console.log('module_id: ', module_id);
-    console.log('id: ', id);
-
-    // sadf
-    // this.setState(prevState => ({
-    //   arrayvar: [...prevState.arrayvar, newelement]
-    // }))
-    // let currentVar = this.
-
-    // this.setState({
-    //   arrayvar: [...this.state.arrayvar, newelement]
-    // })
-
-
-    // 1. Make a shallow copy of the items
     const variables = [...this.state.variables];
-    // 2. Make a shallow copy of the item you want to mutate
     const currentVar = variables[rowIndex];
-    // 3. Replace the property you're intested in
-    currentVar.value = '1 2 3';
-    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+
+    // E.g. "10 15 20"
+    const currentVarValue = currentVar.value;
+
+    // E.g. [10, 15, 20]
+    const currentVarValueList = currentVarValue.toString().trim().split(' ');
+
+    // E.g. varValue0 = x
+    currentVar[name] = value;
+
+    //
+    let inputIndex;
+    switch (name) {
+      case 'varValue0':
+        inputIndex = 0;
+        break;
+      case 'varValueProbability':
+        inputIndex = 0;
+        break;
+      case 'varValue1':
+        inputIndex = 1;
+        break;
+      case 'varValue2':
+        inputIndex = 2;
+        break;
+      default:
+        break;
+    }
+
+    // Update the value
+    currentVarValueList[inputIndex] = value
+    currentVar.value = currentVarValueList.join(' ');
+
+    // Signal we need to save it
+    currentVar.editing = true;
     variables[rowIndex] = currentVar;
-    // 5. Set the state to our new copy
-    this.setState({variables});
 
-
-    // this.setState(state => {
-    //   const list = state.list.map((item, j) => {
-    //     if (j === i) {
-    //       return item + 1;
-    //     } else {
-    //       return item;
-    //     }
-    //   });
-
-    //   return {
-    //     list,
-    //   };
-    // });
-    // this.setState({
-    //   [name]: value
-    // });
+    this.setState({ variables });
   }
 
-  renderProbabilityInput(probability) {
-    return (
-      <div className="flex-even">
-        <input
-          min="0"
-          max="1"
-          step=".1"
-          type="number"
-          name="varValueProbability"
-          id="varValueProbability"
-          placeholder='P(event)'
-          onChange={this.handleValueInputChange}
-          value={probability}
-          className="form-control"
-        />
-      </div>
-    )
+  onSubmit(event) {
+    event.preventDefault();
+    const formIndex = event.target.getAttribute('data-form-index');
+    if (this.props.setProps && this.formIsValid()) {
+      this.props.setProps({
+        submit_timestamp: Date.now(),
+        data: this.state.variables[formIndex]
+      });
+      this.doneEditing(formIndex);
+    }
   }
 
-  // renderVarInputs(varType, varMethod, varValue) {
+  formIsValid() {
+    return true
+  }
+
+  doneEditing(stateVaribleIndex) {
+    const variables = [...this.state.variables]
+    const currentVar = variables[stateVaribleIndex]
+    currentVar.editing = false
+    this.setState({ variables })
+  }
+
   renderVarInputs(variable, rowIndex) {
     // Determine number of input based on its method.
     const inputs = METHOD_VALUE_INPUT_MAP[variable.method];
-    const values = variable.value.trim().split(' ');
-
-    let probabilityInput;
-    // If its a riskVariable, the first value
-    // is the probability
-    if (variable.type === 'riskVariable') {
-      const propability = values.shift();
-      probabilityInput = this.renderProbabilityInput(propability);
-    }
 
     return (
-      <div className="col">
-        <div className="d-flex">
-          {probabilityInput}
-          {inputs.map((v, i) => {
-            const name = `varValue${i}`;
-            return (
-              <div key={i} className="flex-even">
-                <input
-                  data-row-index={rowIndex}
-                  // data-module_id={variable.module_id}
-                  // data-id={variable.id}
-                  placeholder={v.placeholder}
-                  type={v.type}
-                  name={name}
-                  id={name}
-                  onChange={this.handleValueInputChange}
-                  value={values[i]}
-                  className="form-control"
-                />
-              </div>
-            )
-          })
-          }
-        </div>
-      </div>
+      inputs.map((v, i) => {
+        const name = `varValue${i}`;
+        return (
+          <div key={i} className="flex-even">
+            <input
+              data-row-index={rowIndex}
+              placeholder={v.placeholder}
+              type={v.type}
+              name={name}
+              id={name}
+              onChange={this.handleValueInputChange}
+              value={this.state.variables[rowIndex][`varValue${i}`]}
+              className="form-control"
+            />
+          </div>
+        )
+      })
     )
   }
 
   renderVarRow(variable, rowIndex) {
-
-    const rowStyle = {
-      padding: '4px',
-      marginBottom: '8px',
-      background: 'lightgray'
-    }
-
     return (
-      <div className="form-row" key={rowIndex} style={rowStyle}>
-        <div className="col">
-          <input type="text" className="form-control" placeholder="title" value={variable.title} disabled />
+      <form data-form-index={rowIndex} key={rowIndex} onSubmit={this.onSubmit}>
+        <div className="form-row">
+          <div className="col">
+            <input type="text" className="form-control" placeholder="title" value={variable.title} disabled />
+          </div>
+          <div className="col">
+            <div className="d-flex">
+              {this.renderVarInputs(variable, rowIndex)}
+              <div className={'VarBulkEditor__form-buttons' + (this.state.variables[rowIndex].editing ? " show" : "")}>
+                <button className="btn btn-success">
+                  <i className="fas fa-check"></i>
+                </button>
+                <button className="btn btn-danger">
+                  <i className="far fa-times-circle"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        {this.renderVarInputs(variable, rowIndex)}
-      </div>
+      </form>
     )
   }
 
@@ -171,14 +159,11 @@ export default class VarBulkEditor extends Component {
     if (!this.state.variables) {
       return null;
     }
-    // <button>Save</button>
     return (
       <div className="VarBulkEditor">
-        <form>
-          {this.state.variables.map((v, i) => {
-            return this.renderVarRow(v, i);
-          })}
-        </form>
+        {this.state.variables.map((v, i) => {
+          return this.renderVarRow(v, i);
+        })}
       </div>
     );
   }
@@ -186,9 +171,6 @@ export default class VarBulkEditor extends Component {
 
 VarBulkEditor.defaultProps = {
   submit_timestamp: -1,
-  data: {
-    timestamp: 0
-  }
 };
 
 VarBulkEditor.propTypes = {
@@ -205,9 +187,7 @@ VarBulkEditor.propTypes = {
   /**
    * Data
    *
-   * moduleId: which module to add var to
    * variables: array with all project vars
-   * timestamp: must pass a new timestamp to show the component
    */
   data: PropTypes.shape({
     variables: PropTypes.arrayOf(
@@ -223,7 +203,7 @@ VarBulkEditor.propTypes = {
         value: PropTypes.string,
       })
     ),
-    timestamp: PropTypes.number,
+    hide: PropTypes.bool
   }),
 
   /**

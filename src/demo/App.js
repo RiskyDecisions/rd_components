@@ -31,7 +31,8 @@ class App extends Component {
   }
 
   openVarBulkEditor() {
-    this.setState({ varBulkEditorData: { "variables": vars, timestamp: Date.now() } })
+    // this.setState({ varBulkEditorData: { "variables": vars } })
+    this.setState({ varBulkEditorData: { "variables": [] } })
   }
 
   addModule() {

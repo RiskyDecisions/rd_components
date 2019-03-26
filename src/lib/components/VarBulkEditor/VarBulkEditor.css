@@ -1,14 +1,36 @@
-.dropdown-menu--scrollbale {
-  height: auto;
-  max-height: 200px;
-  overflow-x: hidden;
-}
-
-.VarBulkEditor .modal-body {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
+.VarBulkEditor .form-row {
+  padding: 4px;
+  margin-bottom: 8px;
+  background: lightgray;
+  border-radius: .25rem;
 }
 
 .VarBulkEditor .flex-even {
   flex: 1;
+}
+
+@keyframes fade-in-left {
+  from {
+    transform: translateX(100px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.VarBulkEditor__form-buttons {
+  display: none;
+  animation: fade-in-left ease 0.2s forwards;
+}
+
+.VarBulkEditor__form-buttons.show {
+  display: block;
+}
+
+.VarBulkEditor .form-row .col:first-child {
+  padding-left: 0;
+}
+
+.VarBulkEditor .form-row .col:last-child {
+  padding-right: 0;
 }
