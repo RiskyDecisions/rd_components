@@ -1,0 +1,44 @@
+.VarBulkEditor .form-row {
+  padding: 4px;
+  margin: 0 0 8px 0;
+  background: lightgray;
+  border-radius: .25rem;
+}
+
+.VarBulkEditor .flex-even {
+  flex: 1;
+}
+
+@keyframes fade-in-left {
+  from {
+    transform: translateX(100px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.VarBulkEditor__form-buttons {
+  display: none;
+  animation: fade-in-left ease 0.2s forwards;
+}
+
+.VarBulkEditor__form-buttons.show {
+  display: block;
+}
+
+.VarBulkEditor__form-buttons .btn {
+  margin-left: 4px;
+}
+
+.VarBulkEditor .form-row .col:first-child {
+  padding-left: 0;
+}
+
+.VarBulkEditor .form-row .col:first-child input {
+  cursor: pointer;
+}
+
+.VarBulkEditor .form-row .col:last-child {
+  padding-right: 0;
+}

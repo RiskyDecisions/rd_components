@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: 0 */
 import React, { Component } from 'react';
 
-import { TreeComponent, VarEditor, ModuleEditor } from '../lib';
+import { VarEditor, ModuleEditor, VarBulkEditor } from '../lib';
 import { vars } from './dummyVars';
 import { modules } from './dummyModules';
 
@@ -12,11 +12,13 @@ class App extends Component {
     this.state = {
       value: '',
       varEditorData: {},
+      varBulkEditorData: {},
       moduleEditorData: {},
     };
     this.setProps = this.setProps.bind(this);
     this.addVar = this.addVar.bind(this);
     this.addModule = this.addModule.bind(this);
+    this.openVarBulkEditor = this.openVarBulkEditor.bind(this);
   }
 
   setProps(newProps) {
@@ -28,6 +30,10 @@ class App extends Component {
     this.setState({ varEditorData: { "variables": vars, moduleId: 1, timestamp: Date.now() } })
   }
 
+  openVarBulkEditor() {
+    this.setState({ varBulkEditorData: { "variables": vars } })
+  }
+
   addModule() {
     this.setState({ moduleEditorData: { project_id: 1, id: 10, timestamp: Date.now(), nameInputDisabled: true } })
   }
@@ -35,11 +41,6 @@ class App extends Component {
   render() {
     return (
       <div>
-        <TreeComponent
-          setProps={this.setProps}
-          {...this.state}
-          label='hej'
-        />
         <ModuleEditor
           setProps={this.setProps}
           data={this.state.moduleEditorData}
@@ -48,7 +49,12 @@ class App extends Component {
           setProps={this.setProps}
           data={this.state.varEditorData}
         />
+        <VarBulkEditor
+          setProps={this.setProps}
+          data={this.state.varBulkEditorData}
+        />
         <button onClick={this.addVar}>Add var</button>
+        <button onClick={this.openVarBulkEditor}>Open VarBulkEditor</button>
         <button onClick={this.addModule}>Add module</button>
       </div>
     )
