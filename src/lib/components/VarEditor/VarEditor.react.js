@@ -61,7 +61,6 @@ export default class VarEditor extends Component {
     if (newProps.data.timestamp !== this.props.data.timestamp) {
 
       const variable = newProps.data.variable;
-      console.log('variable: ', variable);
 
       // If no var just show the editor
       if (!variable) {
@@ -87,12 +86,12 @@ export default class VarEditor extends Component {
         varName: variable.name || '',
         varTitle: variable.title || '',
         varType: variable.type || '',
-        varValue: variable.value.trim() || '',
+        varValue: variable.value.toString().trim() || '',
       }
 
       // Split the string value
       // valList could have a length from 1 to 4
-      const valList = variable.value.trim().split(/\s+/);
+      const valList = variable.value.toString().trim().split(/\s+/);
       // If the variable is a riskVariale index 0 in valList is the probability
       if (variable.type === 'riskVariable') {
         const propability = valList.shift();
