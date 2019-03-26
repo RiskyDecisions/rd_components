@@ -86,12 +86,12 @@ export default class VarEditor extends Component {
         varName: variable.name || '',
         varTitle: variable.title || '',
         varType: variable.type || '',
-        varValue: variable.value || '',
+        varValue: variable.value.toString().trim() || '',
       }
 
       // Split the string value
       // valList could have a length from 1 to 4
-      const valList = variable.value.trim().split(/\s+/);
+      const valList = variable.value.toString().trim().split(/\s+/);
       // If the variable is a riskVariale index 0 in valList is the probability
       if (variable.type === 'riskVariable') {
         const propability = valList.shift();
@@ -137,7 +137,7 @@ export default class VarEditor extends Component {
         varValue += ' ' + this.state[`varValue${i}`];
       })
 
-      this.setState({ varValue })
+      this.setState({ varValue: varValue.trim() })
     });
   }
 
