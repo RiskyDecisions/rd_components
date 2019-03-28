@@ -23,8 +23,9 @@ export default class VarBulkEditor extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    // Only update state when props differ
-    if (newProps.data.variables !== this.props.data.variables) {
+    const data = newProps.data;
+    // if (data && data.variables && data.variables  !== this.props.data.variables) {
+    if (data && data.variables) {
       const newVariables = [...newProps.data.variables]
       // For every variable create varInput state based on variable value
       newVariables.map((variable, varIndex) => {
@@ -37,53 +38,24 @@ export default class VarBulkEditor extends Component {
     }
   }
 
+  handleOnVarClick(event) {
+    console.log('event: ', event);
+  }
+
   handleValueInputChange(event) {
     const target = event.target;
     const value = target.value;
     const name = target.name;
     const varIndex = target.getAttribute('data-var-index');
+    // const inputIndex = target.getAttribute('data-input-index');
     const variables = [...this.state.variables];
     const currentVar = variables[varIndex];
-
-    // E.g. "10 15 20"
-    const currentVarValue = currentVar.value;
-
     // Create a previous state of the variable to use it user clicks "cancel"
     // This previous state is unset again when we submit or canel
     if (!currentVar.prevState) {
       currentVar.prevState = clone(currentVar);
     }
-
-    // E.g. [10, 15, 20]
-    const currentVarValueList = currentVarValue.toString().trim().split(' ');
-
-    // E.g. varValue0 = x
     currentVar[name] = value;
-
-    //
-    let inputIndex;
-    switch (name) {
-      case 'varValue0':
-        inputIndex = 0;
-        break;
-      case 'varValue1':
-        inputIndex = 1;
-        break;
-      case 'varValue2':
-        inputIndex = 2;
-        break;
-      case 'varValue3':
-        inputIndex = 3;
-        break;
-      default:
-        break;
-    }
-
-    // Update the value
-    currentVarValueList[inputIndex] = value
-    currentVar.value = currentVarValueList.join(' ');
-
-    // Signal we need to save it
     currentVar.editing = true;
     variables[varIndex] = currentVar;
     this.setState({ variables });
@@ -91,15 +63,53 @@ export default class VarBulkEditor extends Component {
 
   onSubmit(event) {
     event.preventDefault();
-    const formIndex = event.target.getAttribute('data-var-index');
-    if (this.props.setProps && this.formIsValid()) {
-      const data = this.state.variables[formIndex];
+    if (this.props.setProps) {
+      const varIndex = event.target.getAttribute('data-var-index');
+      const variable = this.state.variables[varIndex]
+
+      // How many inputs does this var method have?
+      const inputCount = this.varMethodInputCount(variable.type, variable.method)
+
+      // Check if all inputs are filled out
+
+
+      let newValue = ''
+      for (let i = 0; i < inputCount; i++) {
+        newValue += variable[`varValue${i}`] + ' '
+      }
+
+      const ret = {
+        correlation: variable.correlation,
+        factor: variable.factor,
+        id: variable.id,
+        method: variable.method,
+        module_id: variable.module_id,
+        name: variable.name,
+        title: variable.title,
+        type: variable.type,
+        value: newValue.trim(),
+      }
       this.props.setProps({
         submit_timestamp: Date.now(),
-        data: data
+        data: ret
       });
-      this.doneEditing(formIndex);
+      this.doneEditing(varIndex);
     }
+  }
+
+  /**
+   * Returns the number of inputs a certain variable method has
+   * @param {string} varType
+   * @param {string} varMethod
+   */
+  varMethodInputCount(varType, varMethod) {
+      // How many inputs does this var method have?
+      let inputCount = METHOD_VALUE_INPUT_MAP[varMethod].length
+      // If it is a riskVariable, it has one more
+      if (varType === 'riskVariable') {
+        inputCount += 1
+      }
+      return inputCount
   }
 
   onCancel(event) {
@@ -107,18 +117,11 @@ export default class VarBulkEditor extends Component {
     const varIndex = event.currentTarget.getAttribute('data-var-index')
     const variables = [...this.state.variables]
     const variable = variables[varIndex]
-
-    // // Re-set all inputs based on previous value
-    // const inputs = [...METHOD_VALUE_INPUT_MAP[variable.method]];
-    // // If its a riskVariable we preprend a prop input
-    // if (variable.type === 'riskVariable') {
-    //   inputs.unshift({ type: 'number', placeholder: 'P(X)' })
-    // }
-
-    // variable.value = variable.previousValue
-    // variable.editing = false
-    variables[varIndex] = variable.prevState
-    delete variable.prevState;
+    if (variable.prevState) {
+      variables[varIndex] = variable.prevState
+      delete variable.prevState;
+    }
+    variable.editing = false;
     this.setState({ variables })
   }
 
@@ -126,9 +129,9 @@ export default class VarBulkEditor extends Component {
     return true
   }
 
-  doneEditing(stateVaribleIndex) {
+  doneEditing(varIndex) {
     const variables = [...this.state.variables]
-    const currentVar = variables[stateVaribleIndex]
+    const currentVar = variables[varIndex]
     currentVar.editing = false
     this.setState({ variables })
   }
@@ -205,6 +208,9 @@ export default class VarBulkEditor extends Component {
 
 VarBulkEditor.defaultProps = {
   submit_timestamp: -1,
+  data: {
+    variables: []
+  }
 };
 
 VarBulkEditor.propTypes = {
