@@ -19,6 +19,7 @@ export default class VarBulkEditor extends Component {
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onVarClick = this.onVarClick.bind(this);
     this.renderVarInputs = this.renderVarInputs.bind(this);
   }
 
@@ -38,8 +39,27 @@ export default class VarBulkEditor extends Component {
     }
   }
 
-  handleOnVarClick(event) {
-    console.log('event: ', event);
+  /**
+   * When clicking a row we emit an event with the variable
+   * @param {*} event
+   */
+  onVarClick(event) {
+    const varIndex = event.currentTarget.getAttribute('data-var-index')
+    const variable = this.state.variables[varIndex]
+
+    // If the current row is already selected,
+    // we deselect and emit null
+    if (this.state.selectedRowIndex === varIndex) {
+      this.setState({ selectedRowIndex: null })
+      this.props.setProps({
+        selected_variable: null
+      })
+    } else {
+      this.setState({ selectedRowIndex: varIndex })
+      this.props.setProps({
+        selected_variable: variable
+      })
+    }
   }
 
   handleValueInputChange(event) {
@@ -170,8 +190,8 @@ export default class VarBulkEditor extends Component {
   renderVarRow(variable, varIndex) {
     return (
       <form data-var-index={varIndex} key={varIndex} onSubmit={this.onSubmit}>
-        <div className="form-row">
-          <div className="col">
+        <div className={"form-row" + (this.state.selectedRowIndex === varIndex ? " selected" : "")}>
+          <div className="col" data-var-index={varIndex} onClick={this.onVarClick}>
             <input type="text" className="form-control" placeholder="title" value={variable.title} disabled />
           </div>
           <div className="col">

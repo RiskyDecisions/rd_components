@@ -5,6 +5,10 @@
   border-radius: .25rem;
 }
 
+.VarBulkEditor .form-row.selected {
+  background: #c5c500;
+}
+
 .VarBulkEditor .flex-even {
   flex: 1;
 }
