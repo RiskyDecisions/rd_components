@@ -24,9 +24,9 @@ export default class VarBulkEditor extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const data = newProps.data;
-    // if (data && data.variables && data.variables  !== this.props.data.variables) {
-    if (data && data.variables) {
+    const data = newProps.data
+
+    if (data && data.variables && data.variables  !== this.props.data.variables) {
       const newVariables = [...newProps.data.variables]
       // For every variable create varInput state based on variable value
       newVariables.map((variable, varIndex) => {
@@ -35,7 +35,16 @@ export default class VarBulkEditor extends Component {
           newVariables[varIndex][`varValue${valIndex}`] = value
         });
       })
-      this.setState({ variables: newVariables })
+      this.setState({
+        variables: newVariables,
+        selectedRowIndex: null,
+      })
+
+      // When receving new varibles,
+      // indicate that no rows are selected by default
+      this.props.setProps({
+        selected_variable: null
+      })
     }
   }
 
@@ -177,7 +186,7 @@ export default class VarBulkEditor extends Component {
               name={name}
               id={name}
               onChange={this.handleValueInputChange}
-              value={this.state.variables[varIndex][`varValue${i}`]}
+              value={this.state.variables[varIndex][`varValue${i}`] || ''}
               className="form-control"
               required={true}
             />
@@ -189,9 +198,9 @@ export default class VarBulkEditor extends Component {
 
   renderVarRow(variable, varIndex) {
     return (
-      <form data-var-index={varIndex} key={varIndex} onSubmit={this.onSubmit}>
+      <form data-var-index={varIndex} key={varIndex} onSubmit={this.onSubmit} onClick={this.onVarClick}>
         <div className={"form-row" + (this.state.selectedRowIndex === varIndex ? " selected" : "")}>
-          <div className="col" data-var-index={varIndex} onClick={this.onVarClick}>
+          <div className="col">
             <input type="text" className="form-control" placeholder="title" value={variable.title} disabled />
           </div>
           <div className="col">
