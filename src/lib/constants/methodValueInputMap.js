@@ -1,15 +1,28 @@
-const bernoulli = [{ type: 'number', placeholder: 'Probability' }]
-const constant = [{ type: 'string', placeholder: 'Constant value' }]
-const func = [{ type: 'string', placeholder: 'Function expression' }]
+const bernoulli = [{
+  type: 'number',
+  placeholder: 'Probability',
+  dataBalloon: 'Probability (between 0 and 1)',
+  dataBalloonPos: 'up',
+  min: 0,
+  max: 0,
+  step: 0.1
+}]
+const constant = [{ type: 'string', placeholder: 'Constant value', dataBalloon: 'Constant', dataBalloonPos: 'up' }]
+const func = [{
+  type: 'string',
+  placeholder: 'Function expression',
+  dataBalloon: 'Function expression',
+  dataBalloonPos: 'up'
+}]
 const lowMidHigh = [
-  { type: 'number', placeholder: 'Low' },
-  { type: 'number', placeholder: 'Mid' },
-  { type: 'number', placeholder: 'High' },
+  { type: 'number', placeholder: 'Low', dataBalloon: 'Low', dataBalloonPos: 'up' },
+  { type: 'number', placeholder: 'Mid', dataBalloon: 'Mid', dataBalloonPos: 'up' },
+  { type: 'number', placeholder: 'High', dataBalloon: 'High', dataBalloonPos: 'up' },
 ]
 
 const uniform = [
-  { type: 'number', placeholder: 'Min.', },
-  { type: 'number', placeholder: 'Max.', },
+  { type: 'number', placeholder: 'Min.', dataBalloon: 'Minimum', dataBalloonPos: 'up' },
+  { type: 'number', placeholder: 'Max.', dataBalloon: 'Maxium', dataBalloonPos: 'up' },
 ]
 
 export const METHOD_VALUE_INPUT_MAP = {

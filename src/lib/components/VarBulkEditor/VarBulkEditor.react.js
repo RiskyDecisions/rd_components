@@ -171,7 +171,9 @@ export default class VarBulkEditor extends Component {
         placeholder: 'P(X)',
         min: 0,
         max: 1,
-        step: 0.1
+        step: 0.1,
+        dataBalloonPos: "up",
+        dataBalloon: "Probability of risk (between 0 and 1)"
       })
     }
 
@@ -179,7 +181,11 @@ export default class VarBulkEditor extends Component {
       inputs.map((v, i) => {
         const name = `varValue${i}`;
         return (
-          <div key={i} className="flex-even">
+          <div
+          key={i}
+          className="flex-even"
+          data-balloon-pos={v.dataBalloonPos}
+          data-balloon={v.dataBalloon}>
             <input
               data-input-index={i}
               data-var-index={varIndex}
