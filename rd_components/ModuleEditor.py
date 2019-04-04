@@ -15,10 +15,12 @@ Keyword arguments:
 - className (string; optional): ClassName
 - data (optional): Data
 
-timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'project_id', 'timestamp', 'image_url', 'name', 'description', 'include_in_report', 'nameInputDisabled'.
+timestamp: must pass a new timestamp to show the component. data has the following type: dict containing keys 'id', 'project_id', 'parent', 'type', 'timestamp', 'image_url', 'name', 'description', 'include_in_report', 'nameInputDisabled'.
 Those keys have the following types:
   - id (number; optional)
   - project_id (number; required)
+  - parent (a value equal to: PropTypes.number.isRequired, PropTypes.undefined; optional)
+  - type (string; required)
   - timestamp (number; required)
   - image_url (string; optional)
   - name (string; optional)

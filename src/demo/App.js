@@ -1,9 +1,10 @@
 /* eslint no-magic-numbers: 0 */
 import React, { Component } from 'react';
 
-import { VarEditor, ModuleEditor, VarBulkEditor } from '../lib';
+import { VarEditor, ModuleEditor, ModelTree, VarBulkEditor } from '../lib';
 import { vars } from './dummyVars';
-import { modules } from './dummyModules';
+import { modules, people } from './dummyModules';
+
 
 class App extends Component {
 
@@ -14,11 +15,13 @@ class App extends Component {
       varEditorData: {},
       varBulkEditorData: {},
       moduleEditorData: {},
+      modules: []
     };
     this.setProps = this.setProps.bind(this);
     this.addVar = this.addVar.bind(this);
     this.addModule = this.addModule.bind(this);
     this.openVarBulkEditor = this.openVarBulkEditor.bind(this);
+    this.openTree = this.openTree.bind(this);
   }
 
   setProps(newProps) {
@@ -38,6 +41,10 @@ class App extends Component {
     this.setState({ moduleEditorData: { project_id: 1, id: 10, timestamp: Date.now(), nameInputDisabled: true } })
   }
 
+  openTree() {
+    this.setState({ modules: modules})
+  }
+
   render() {
     return (
       <div>
@@ -53,9 +60,11 @@ class App extends Component {
           setProps={this.setProps}
           data={this.state.varBulkEditorData}
         />
+        <ModelTree modules={this.state.modules}/>
         <button onClick={this.addVar}>Add var</button>
         <button onClick={this.openVarBulkEditor}>Open VarBulkEditor</button>
         <button onClick={this.addModule}>Add module</button>
+        <button onClick={this.openTree}>ModelTree</button>
       </div>
     )
   }

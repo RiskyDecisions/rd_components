@@ -80,6 +80,8 @@ export default class ModuleEditor extends Component {
   submit() {
     const moduleData = {
       project_id: this.props.data.project_id,
+      parent: this.props.data.parent,
+      type: this.props.data.type,
       name: this.state.name,
       timestamp: this.props.data.timestamp,
       description: this.state.description,
@@ -95,6 +97,7 @@ export default class ModuleEditor extends Component {
     }
 
     if (this.props.setProps && this.formIsValid()) {
+      console.log('moduleData: ', moduleData);
       this.props.setProps({
         submit_timestamp: Date.now(),
         data: moduleData
@@ -267,6 +270,11 @@ ModuleEditor.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.number,
     project_id: PropTypes.number.isRequired,
+    parent: PropTypes.oneOf([
+        PropTypes.number.isRequired,
+        PropTypes.undefined,
+    ]),
+    type: PropTypes.string.isRequired,
     timestamp: PropTypes.number.isRequired,
     image_url: PropTypes.string,
     name: PropTypes.string,
