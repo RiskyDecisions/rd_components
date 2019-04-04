@@ -1,6 +1,6 @@
 {
   "name": "rd_components",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "Project Description",
   "main": "build/index.js",
   "scripts": {
@@ -17,8 +17,7 @@
   "author": "ab ablochs@gmail.com",
   "license": "",
   "dependencies": {
-    "ramda": "^0.25.0",
-    "reactstrap": "^4.8.0"
+    "ramda": "^0.25.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

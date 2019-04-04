@@ -1,0 +1,24 @@
+.ModelTree ul {
+  list-style: none;
+  cursor: pointer;
+}
+
+.ModelTree ul:first-child {
+  padding-left: 0;
+}
+
+.ModelTree li {
+  line-height: 32px;
+}
+
+.ModelTree li span.selected {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ModelTree i {
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  line-height: 32px;
+}
