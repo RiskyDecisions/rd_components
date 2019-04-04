@@ -39,7 +39,7 @@
   padding-left: 0;
 }
 
-.VarBulkEditor .form-row .col:first-child input {
+.VarBulkEditor span {
   cursor: pointer;
 }
 

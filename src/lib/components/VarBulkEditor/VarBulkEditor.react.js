@@ -19,14 +19,14 @@ export default class VarBulkEditor extends Component {
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.onVarClick = this.onVarClick.bind(this);
+    this.selectVariable = this.selectVariable.bind(this);
     this.renderVarInputs = this.renderVarInputs.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
     const data = newProps.data
 
-    if (data && data.variables && data.variables  !== this.props.data.variables) {
+    if (data && data.variables && data.variables !== this.props.data.variables) {
       const newVariables = [...newProps.data.variables]
       // For every variable create varInput state based on variable value
       newVariables.map((variable, varIndex) => {
@@ -49,16 +49,17 @@ export default class VarBulkEditor extends Component {
   }
 
   /**
-   * When clicking a row we emit an event with the variable
-   * @param {*} event
+   *
+   * @param {*} varIndex
+   * @param {bool} toggle Indicated wether variable should be de-selected if
+   * selected
    */
-  onVarClick(event) {
-    const varIndex = event.currentTarget.getAttribute('data-var-index')
+  selectVariable(varIndex, toggle=true) {
     const variable = this.state.variables[varIndex]
 
     // If the current row is already selected,
     // we deselect and emit null
-    if (this.state.selectedRowIndex === varIndex) {
+    if (this.state.selectedRowIndex === varIndex && toggle) {
       this.setState({ selectedRowIndex: null })
       this.props.setProps({
         selected_variable: null
@@ -99,9 +100,6 @@ export default class VarBulkEditor extends Component {
       // How many inputs does this var method have?
       const inputCount = this.varMethodInputCount(variable.type, variable.method)
 
-      // Check if all inputs are filled out
-
-
       let newValue = ''
       for (let i = 0; i < inputCount; i++) {
         newValue += variable[`varValue${i}`] + ' '
@@ -123,6 +121,8 @@ export default class VarBulkEditor extends Component {
         data: ret
       });
       this.doneEditing(varIndex);
+      // De-select variable after editing
+      this.selectVariable(varIndex);
     }
   }
 
@@ -132,13 +132,13 @@ export default class VarBulkEditor extends Component {
    * @param {string} varMethod
    */
   varMethodInputCount(varType, varMethod) {
-      // How many inputs does this var method have?
-      let inputCount = METHOD_VALUE_INPUT_MAP[varMethod].length
-      // If it is a riskVariable, it has one more
-      if (varType === 'riskVariable') {
-        inputCount += 1
-      }
-      return inputCount
+    // How many inputs does this var method have?
+    let inputCount = METHOD_VALUE_INPUT_MAP[varMethod].length
+    // If it is a riskVariable, it has one more
+    if (varType === 'riskVariable') {
+      inputCount += 1
+    }
+    return inputCount
   }
 
   onCancel(event) {
@@ -154,10 +154,6 @@ export default class VarBulkEditor extends Component {
     this.setState({ variables })
   }
 
-  formIsValid() {
-    return true
-  }
-
   doneEditing(varIndex) {
     const variables = [...this.state.variables]
     const currentVar = variables[varIndex]
@@ -170,7 +166,13 @@ export default class VarBulkEditor extends Component {
     const inputs = [...METHOD_VALUE_INPUT_MAP[variable.method]];
     // If its a riskVariable we preprend a prop input
     if (variable.type === 'riskVariable') {
-      inputs.unshift({ type: 'number', placeholder: 'P(X)' })
+      inputs.unshift({
+        type: 'number',
+        placeholder: 'P(X)',
+        min: 0,
+        max: 1,
+        step: 0.1
+      })
     }
 
     return (
@@ -185,10 +187,14 @@ export default class VarBulkEditor extends Component {
               type={v.type}
               name={name}
               id={name}
+              min={v.min}
+              max={v.max}
+              step={v.step}
               onChange={this.handleValueInputChange}
               value={this.state.variables[varIndex][`varValue${i}`] || ''}
               className="form-control"
               required={true}
+              onFocus={() => this.selectVariable(varIndex, false)}
             />
           </div>
         )
@@ -198,10 +204,14 @@ export default class VarBulkEditor extends Component {
 
   renderVarRow(variable, varIndex) {
     return (
-      <form data-var-index={varIndex} key={varIndex} onSubmit={this.onSubmit} onClick={this.onVarClick}>
+      <form data-var-index={varIndex} key={varIndex} onSubmit={this.onSubmit}>
         <div className={"form-row" + (this.state.selectedRowIndex === varIndex ? " selected" : "")}>
           <div className="col">
-            <input type="text" className="form-control" placeholder="title" value={variable.title} disabled />
+            <span
+              className="form-control"
+              onClick={() => this.selectVariable(varIndex)}>
+              {variable.title}
+            </span>
           </div>
           <div className="col">
             <div className="d-flex">
