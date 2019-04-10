@@ -16,20 +16,23 @@ const initialState = {
   correlationFactor: '',
   formIsValid: false,
   modalTitle: 'Add Variable',
+  newVarOptionValue: '',
   show: false,
   submitBtnText: 'Save Variable',
-  varId: '',
   varDescriptin: '',
+  varId: '',
   varMethod: '',
   varMethodDropdownIsOpen: false,
   varName: '',
+  varOptionValueDropdownIsOpen: false,
+  varOptions: [],
   varTitle: '',
   varType: '',
   varTypeDropdownIsOpen: false,
-  varValue: '',
   varValue0: '',
   varValue1: '',
   varValue2: '',
+  varValue: '',
   varValueProbability: '',
 }
 
@@ -54,12 +57,15 @@ export default class VarEditor extends Component {
     this.submit = this.submit.bind(this);
     this.toggle = this.toggle.bind(this);
     this.resetValues = this.resetValues.bind(this);
+    this.handleAddOption = this.handleAddOption.bind(this);
+    this.renderOptionVarOptions = this.renderOptionVarOptions.bind(this);
+    this.handleVarOptionClick = this.handleVarOptionClick.bind(this);
+    this.removeVariableOption = this.removeVariableOption.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
     // Show component if props.data contains new timestamp
     if (newProps.data.timestamp !== this.props.data.timestamp) {
-
       const variable = newProps.data.variable;
 
       // If no var just show the editor
@@ -87,6 +93,7 @@ export default class VarEditor extends Component {
         varTitle: variable.title || '',
         varType: variable.type || '',
         varValue: variable.value.toString().trim() || '',
+        varOptions: this.parseNewPropsOptions(variable.type, variable.value.toString().trim())
       }
 
       // Split the string value
@@ -105,6 +112,16 @@ export default class VarEditor extends Component {
     }
   }
 
+  parseNewPropsOptions(varType, varValue) {
+    if (varType !== 'optionVariable') {
+      return []
+    }
+    // Removing the first value, which is the default value
+    const varOptions = varValue.split(',')
+    varOptions.shift()
+    return varOptions
+  }
+
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -113,6 +130,14 @@ export default class VarEditor extends Component {
       [name]: value
     });
   }
+
+  // handleVarOptionInputChange(event) {
+  //   const target = event.target;
+  //   const value = target.value;
+  //   const name = target.name;
+  //   console.log('value: ', value);
+  //   console.log('name: ', name);
+  // }
 
   handleValueInputChange(event) {
     const target = event.target;
@@ -141,7 +166,8 @@ export default class VarEditor extends Component {
     });
   }
 
-  submit() {
+  submit(event) {
+    event.preventDefault();
     const varData = {
       id: this.state.varId,
       correlation: this.state.correlatedTo,
@@ -179,33 +205,68 @@ export default class VarEditor extends Component {
   }
 
   formIsValid() {
-    let isValid = true;
-    const varsToVerify = [
-      'varMethod',
-      'varName',
-      'varTitle',
-      'varType',
-      'varValue',
-    ]
-    // TODO:
-    // validata 'varValue' properly
-    const vars = pick(varsToVerify, this.state)
 
-    for (const i in vars) {
-      const val = vars[i];
-      if (val === '') {
-        isValid = false;
-      }
+    const { varType, varMethod, varOptions, varValue } = this.state;
+
+    switch (varType) {
+      case 'variable':
+        if (varMethod === '') {
+          this.setState({ varMethodMissing: true })
+          return false;
+        }
+        return true;
+        case 'riskVariable':
+        if (varMethod === '') {
+          this.setState({ varMethodMissing: true })
+          return false;
+        }
+        return true;
+      case 'timeseries':
+        return true;
+      case 'optionVariable':
+        // Check if we have atleast two options
+        if (varOptions.length < 2) {
+          this.setState({ varOptionsMissing: true })
+          return false
+        }
+        this.setState({ varOptionsMissing: false })
+        if (varValue === '') {
+          this.setState({ varValueMissing: true })
+          return false
+        }
+        return true
+      default:
+        this.setState({ varTypeMissing: true })
+        return false;
     }
 
-    // Validate riskVariable
-    if (
-      this.state.varType === 'riskVariable'
-      && !this.valueProbabilityIsValid()) {
-      return false;
-    }
+    // let isValid = true;
+    // const varsToVerify = [
+    //   'varMethod',
+    //   'varName',
+    //   'varTitle',
+    //   'varType',
+    //   'varValue',
+    // ]
+    // // TODO:
+    // // validata 'varValue' properly
+    // const vars = pick(varsToVerify, this.state)
 
-    return isValid;
+    // for (const i in vars) {
+    //   const val = vars[i];
+    //   if (val === '') {
+    //     isValid = false;
+    //   }
+    // }
+
+    // // Validate riskVariable
+    // if (
+    //   this.state.varType === 'riskVariable'
+    //   && !this.valueProbabilityIsValid()) {
+    //   return false;
+    // }
+
+    // return isValid;
   }
 
   valueProbabilityIsValid() {
@@ -216,10 +277,17 @@ export default class VarEditor extends Component {
     return false;
   }
 
-  toggle(attr) {
-    this.setState({
-      [attr]: !this.state[attr]
-    });
+  toggle(attr, close = false) {
+    if (close) {
+      this.setState({
+        [attr]: false
+      });
+    }
+    else {
+      this.setState({
+        [attr]: !this.state[attr]
+      });
+    }
   }
 
   renderTitleInput() {
@@ -235,6 +303,7 @@ export default class VarEditor extends Component {
           onChange={this.handleInputChange}
           value={this.state.varTitle}
           className="form-control"
+          required={true}
         />
       </div>
     )
@@ -277,16 +346,17 @@ export default class VarEditor extends Component {
   }
 
   renderTypeDropdown() {
+    const missing = this.state.varTypeMissing;
     return (
       <div className="form-group">
         <label htmlFor="varType">Type</label>
         <div className="dropdown">
           <button
-            className="btn btn-outline-secondary btn-block"
+            className={'btn btn-block' + (missing ? ' btn-danger' : ' btn-outline-secondary')}
             type="button"
             onClick={() => this.toggle('varTypeDropdownIsOpen')}
           >
-            { TYPE_NAME_MAP[this.state.varType] || "(Choose variable type)"}
+            {TYPE_NAME_MAP[this.state.varType] || "(Choose variable type)"}
           </button>
           <div
             className="dropdown-menu w-100"
@@ -295,6 +365,7 @@ export default class VarEditor extends Component {
             <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('variable')}>Variable</a>
             <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('riskVariable')}>Risk Variable</a>
             <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('timeseries')}>Timeseries</a>
+            <a className="dropdown-item" href="#" onClick={() => this.handleTypeClick('optionVariable')}>Option Variable</a>
           </div>
         </div>
       </div>
@@ -315,6 +386,7 @@ export default class VarEditor extends Component {
       varType: typeVal,
       varTypeDropdownIsOpen: false,
       varMethod: '',
+      varTypeMissing: false
     })
   }
 
@@ -325,22 +397,118 @@ export default class VarEditor extends Component {
     })
   }
 
-  renderMethodDropdown() {
+  handleAddOption() {
+    const newVarOptionValue = this.state.newVarOptionValue
+    if (newVarOptionValue === '') {
+      this.setState({varOptionsMissing: true})
+      return;
+    }
+    const newVarOptions = this.state.varOptions.slice();
+    newVarOptions.push(newVarOptionValue)
+    this.setState({
+      varOptions: newVarOptions,
+      newVarOptionValue: ''
+    }, () => {
+      if (this.state.varOptions.length >= 2) {
+        this.setState({varOptionsMissing: false})
+      }
+    })
+    this.toggle('varOptionValueDropdownIsOpen', true);
+  }
 
-    if (!this.state.varType) {
+  /**
+   * The varValue for an optionVariable
+   * is the default value followed by the avaiable options:
+   * <defaultValue,optionA,optionB,optionN>
+   * e.g.: banana,apple,banana,orange
+   * @param {string|int} option The selected option from the dropdown
+   */
+  handleVarOptionClick(option) {
+    let options = [...this.state.varOptions];
+    options.unshift(option)
+
+    // Make sure we have no un-expected spaces
+    options = options.map(s => typeof(s) === 'string' ? s.trim(): s);
+    const varValue = options.join(',')
+
+    this.setState({
+      varValue,
+      varValueMissing: false
+    })
+    this.toggle('varOptionValueDropdownIsOpen', true)
+  }
+
+  removeVariableOption(option) {
+    console.log('option: ', option);
+    const newVarOptions = this.state.varOptions.slice();
+    this.setState({ varOptions: newVarOptions.filter(i => i !== option) })
+    this.toggle('varOptionValueDropdownIsOpen', true);
+  }
+
+  renderOptionVarOptions() {
+    const {varOptions, varOptionsMissing} = this.state;
+
+    if (this.state.varType !== 'optionVariable') {
       return null;
     }
+    return (
+      <div className="form-group">
+        <label htmlFor="varMethod">Define variable options</label>
+        {
+          varOptions.length > 0 ?
+            varOptions.map((option, i) => {
+              return (
+                <div className="input-group mb-1" key={`${option}-${i}`}>
+                  <input
+                    type="text"
+                    name={`varOptionValue-${i}`}
+                    className="form-control"
+                    value={option}
+                    onChange={this.handleInputChange} />
+                  <div className="input-group-append">
+                    <button className="btn btn-outline-danger" type="button" onClick={() => this.removeVariableOption(option)}>
+                      <i className="fas fa-times" />
+                    </button>
+                  </div>
+                </div>
+              )
+            })
+            : null
+
+        }
+        <input
+          type="text"
+          name="newVarOptionValue"
+          className={"form-control" + (varOptionsMissing ? ' is-invalid' : '')}
+          onChange={this.handleInputChange}
+          value={this.state.newVarOptionValue} />
+        <button
+          onClick={this.handleAddOption}
+          className={"btn btn-block btn-sm" + (varOptionsMissing ? ' btn-danger' : ' btn-secondary')}>
+            { varOptionsMissing ? 'Add atleast two options' : 'Add another option'}
+          </button>
+      </div>
+    )
+  }
+
+  renderMethodDropdown() {
+
+    if (!['variable', 'riskVariable', 'timeseries'].includes(this.state.varType)) {
+      return null;
+    }
+
+    const missing = this.state.varMethodMissing;
 
     return (
       <div className="form-group">
         <label htmlFor="varMethod">Method</label>
         <div className="dropdown">
           <button
-            className="btn btn-outline-secondary btn-block"
+            className={"btn btn-block" + (missing ? ' btn-danger' : ' btn-outline-secondary')}
             type="button"
             onClick={() => this.toggle('varMethodDropdownIsOpen')}
           >
-            { METHOD_NAME_MAP[this.state.varMethod] || "(Choose variable method)"}
+            {METHOD_NAME_MAP[this.state.varMethod] || "(Choose variable method)"}
           </button>
           {this.state.varType ?
             <div
@@ -373,6 +541,51 @@ export default class VarEditor extends Component {
             </div>
             : null
           }
+        </div>
+      </div>
+    )
+  }
+
+  renderVariableOptionValueDropdown() {
+    if (this.state.varOptions.length < 1) {
+      return null;
+    }
+
+    const missing = this.state.varValueMissing;
+
+    return (
+      <div className="form-group">
+        <label htmlFor="varMethod">Option Value</label>
+        <div className="dropdown">
+          <button
+            className={"btn btn-block" + (missing ? ' btn-danger' : ' btn-outline-secondary')}
+            type="button"
+            onClick={() => this.toggle('varOptionValueDropdownIsOpen')}
+          >
+            {
+              this.state.varValue ?
+              this.state.varValue.split(',')[0]
+              : "(Choose option value)"
+            }
+          </button>
+          <div
+            className="dropdown-menu w-100 dropdown-menu--scrollbale"
+            style={{ 'display': this.state.varOptionValueDropdownIsOpen ? 'block' : 'none' }}
+          >
+            {
+              this.state.varOptions.map((option) => {
+                return (
+                  <a key={option}
+                    className="dropdown-item"
+                    href="#"
+                    onClick={() => this.handleVarOptionClick(option)}
+                  >
+                    {option}
+                  </a>
+                )
+              })
+            }
+          </div>
         </div>
       </div>
     )
@@ -422,13 +635,17 @@ export default class VarEditor extends Component {
             return (
               <div key={i} className="flex-even">
                 <input
-                  placeholder={v.placeholder}
-                  type={v.type}
-                  name={name}
-                  id={name}
-                  onChange={this.handleValueInputChange}
-                  value={this.state[name]}
                   className="form-control"
+                  id={name}
+                  max={v.max}
+                  min={v.min}
+                  name={name}
+                  onChange={this.handleValueInputChange}
+                  placeholder={v.placeholder}
+                  required={true}
+                  step={v.step}
+                  type={v.type}
+                  value={this.state[name]}
                 />
               </div>
             )
@@ -440,6 +657,9 @@ export default class VarEditor extends Component {
   }
 
   renderCorrelate() {
+    if (!['variable', 'riskVariable', 'timeseries'].includes(this.state.varType)) {
+      return null;
+    }
     return (
       <div className="form-group">
         <div className="custom-control custom-checkbox">
@@ -520,19 +740,23 @@ export default class VarEditor extends Component {
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                {this.renderTitleInput()}
-                {this.renderNameInput()}
-                {this.renderDescriptionInput()}
-                {this.renderTypeDropdown()}
-                {this.renderMethodDropdown()}
-                {this.renderValueInput()}
-                {this.renderCorrelate()}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={this.close}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={this.submit}>{this.state.submitBtnText}</button>
-              </div>
+              <form onSubmit={this.submit}>
+                <div className="modal-body">
+                  {this.renderTitleInput()}
+                  {this.renderNameInput()}
+                  {this.renderDescriptionInput()}
+                  {this.renderTypeDropdown()}
+                  {this.renderMethodDropdown()}
+                  {this.renderOptionVarOptions()}
+                  {this.renderValueInput()}
+                  {this.renderVariableOptionValueDropdown()}
+                  {this.renderCorrelate()}
+                </div>
+                <div className="modal-footer">
+                  <button className="btn btn-secondary" onClick={this.close}>Close</button>
+                  <button className="btn btn-primary">{this.state.submitBtnText}</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

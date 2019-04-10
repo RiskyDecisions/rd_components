@@ -4,10 +4,10 @@
   overflow-x: hidden;
 }
 
-.VarEditor .modal-body {
+/* .VarEditor .modal-body {
   max-height: calc(100vh - 200px);
   overflow-y: auto;
-}
+} */
 
 .VarEditor .flex-even {
   flex: 1;

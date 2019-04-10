@@ -2,8 +2,59 @@
 import React, { Component } from 'react';
 
 import { VarEditor, ModuleEditor, ModelTree, VarBulkEditor } from '../lib';
-import { vars } from './dummyVars';
+// import { vars } from './dummyVars';
 import { modules, people } from './dummyModules';
+
+const vars = [
+  {
+    "calculated_on": "",
+    "correlation": "",
+    "factor": "",
+    "id": 501,
+    "method": "function",
+    "module_id": 5,
+    "name": "cmp_ref",
+    "title": "Reference Case (USD)",
+    "type": "variable",
+    "value": "ref_all"
+  },
+  {
+    "calculated_on": "",
+    "correlation": "",
+    "factor": "",
+    "id": 502,
+    "method": "function",
+    "module_id": 5,
+    "name": "cmp_welltec",
+    "title": "Welltec Case (USD)",
+    "type": "variable",
+    "value": "ophwab_all"
+  },
+  {
+    "calculated_on": "",
+    "correlation": "",
+    "factor": "",
+    "id": 505,
+    "method": "function",
+    "module_id": 5,
+    "name": "dif_ref_wlt",
+    "title": "Dif Reference Case - Welltec Case (Open Hole WAB)",
+    "type": "variable",
+    "value": "ref_all-ophwab_all"
+  },
+  {
+    "calculated_on": "",
+    "correlation": "",
+    "factor": "",
+    "id": 506,
+    "method": "",
+    "module_id": 5,
+    "name": "",
+    "title": "asdf",
+    "type": "optionVariable",
+    "value": "a,a,b"
+  }
+]
 
 
 class App extends Component {
@@ -42,7 +93,7 @@ class App extends Component {
   }
 
   openTree() {
-    this.setState({ modules: modules})
+    this.setState({ modules: modules })
   }
 
   render() {
@@ -60,7 +111,7 @@ class App extends Component {
           setProps={this.setProps}
           data={this.state.varBulkEditorData}
         />
-        <ModelTree modules={this.state.modules}/>
+        <ModelTree modules={this.state.modules} />
         <button onClick={this.addVar}>Add var</button>
         <button onClick={this.openVarBulkEditor}>Open VarBulkEditor</button>
         <button onClick={this.addModule}>Add module</button>

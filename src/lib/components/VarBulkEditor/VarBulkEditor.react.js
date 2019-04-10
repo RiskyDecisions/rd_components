@@ -14,6 +14,7 @@ export default class VarBulkEditor extends Component {
     this.state = {
       // Keep variables in object so they are faster to change than in array
       variables: {},
+      varOptionValueDropdownIsOpen: false
     }
     this.doneEditing = this.doneEditing.bind(this);
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
@@ -30,10 +31,20 @@ export default class VarBulkEditor extends Component {
       const newVariables = [...newProps.data.variables]
       // For every variable create varInput state based on variable value
       newVariables.map((variable, varIndex) => {
-        const valList = variable.value.toString().trim().split(' ')
-        valList.map((value, valIndex) => {
-          newVariables[varIndex][`varValue${valIndex}`] = value
-        });
+
+        // optionVariable(s) dont have any method, but an varOptions array
+        if (variable.type === 'optionVariable') {
+          const varOptions = variable.value.split(',')
+          varOptions.shift()
+          newVariables[varIndex].varOptions = varOptions
+        } else {
+
+          const valList = variable.value.toString().trim().split(' ')
+          valList.map((value, valIndex) => {
+            newVariables[varIndex][`varValue${valIndex}`] = value
+          });
+        }
+
       })
       this.setState({
         variables: newVariables,
@@ -91,18 +102,20 @@ export default class VarBulkEditor extends Component {
     this.setState({ variables });
   }
 
-  onSubmit(event) {
-    event.preventDefault();
+  // onSubmit(event, varIndex) {
+  onSubmit(varIndex) {
     if (this.props.setProps) {
-      const varIndex = event.target.getAttribute('data-var-index');
       const variable = this.state.variables[varIndex]
-
-      // How many inputs does this var method have?
-      const inputCount = this.varMethodInputCount(variable.type, variable.method)
-
       let newValue = ''
-      for (let i = 0; i < inputCount; i++) {
-        newValue += variable[`varValue${i}`] + ' '
+      if (variable.type === 'optionVariable') {
+        newValue = variable.value
+      } else {
+        // How many inputs does this var method have?
+        const inputCount = this.varMethodInputCount(variable.type, variable.method)
+
+        for (let i = 0; i < inputCount; i++) {
+          newValue += variable[`varValue${i}`] + ' '
+        }
       }
 
       const ret = {
@@ -122,7 +135,7 @@ export default class VarBulkEditor extends Component {
       });
       this.doneEditing(varIndex);
       // De-select variable after editing
-      this.selectVariable(varIndex);
+      this.setState({selectedRowIndex: null});
     }
   }
 
@@ -161,7 +174,88 @@ export default class VarBulkEditor extends Component {
     this.setState({ variables })
   }
 
+  toggle(attr) {
+    this.setState({
+      [attr]: !this.state[attr]
+    });
+  }
+
+  handleVarOptionClick(option, varIndex) {
+    const variables = [...this.state.variables];
+    const currentVar = variables[varIndex];
+    const currentVarValue = currentVar.value;
+
+    // Replace the current selected value,
+    // which is the first part of the varValue string
+    let valueList = currentVarValue.split(',')
+    valueList[0] = option
+    valueList = valueList.map(s => typeof(s) === 'string' ? s.trim(): s);
+    const varValue = valueList.join(',')
+    currentVar.value = varValue
+    variables[varIndex] = currentVar;
+    this.setState({
+      variables,
+      varOptionValueDropdownIsOpen: false
+    }, ()=> {
+      this.onSubmit(varIndex);
+    });
+
+  }
+
+  renderOptionVarDropdown(variable, varIndex) {
+
+    if (variable.type !== 'optionVariable') {
+      return null
+    }
+
+    const varValue = variable.value;
+    const varOptions = varValue.split(',')
+    const varOptionSelected = varOptions.shift()
+
+    return (
+      <div className="flex-even">
+        <div className="dropdown">
+          <button
+            className="btn btn-block btn-light dropdown-toggle"
+            type="button"
+            onClick={() => this.toggle('varOptionValueDropdownIsOpen')}
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            { varOptionSelected }
+          </button>
+          <div
+            className="dropdown-menu w-100"
+            style={{ 'display': this.state.varOptionValueDropdownIsOpen ? 'block' : 'none' }}
+          >
+            {
+              varOptions.map((option) => {
+                return (
+                  <a key={option}
+                    className="dropdown-item"
+                    href="#"
+                    onClick={() => this.handleVarOptionClick(option, varIndex)}
+                  >
+                    {option}
+                  </a>
+                )
+              })
+            }
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderVarInputs(variable, varIndex) {
+
+    // optionVariable
+    if (!['variable', 'riskVariable', 'timeseries'].includes(variable.type)) {
+      return null
+    }
+
     // Determine number of input based on its method.
     const inputs = [...METHOD_VALUE_INPUT_MAP[variable.method]];
     // If its a riskVariable we preprend a prop input
@@ -210,18 +304,23 @@ export default class VarBulkEditor extends Component {
 
   renderVarRow(variable, varIndex) {
     return (
-      <form data-var-index={varIndex} key={varIndex} onSubmit={this.onSubmit}>
+      <form data-var-index={varIndex} key={varIndex} onSubmit={() => this.onSubmit(varIndex)}>
         <div className={"form-row" + (this.state.selectedRowIndex === varIndex ? " selected" : "")}>
-          <div className="col">
+          <div className="col"
+              data-balloon={'name: ' + variable.name}
+              data-balloon-pos='up'
+            >
             <span
               className="form-control"
-              onClick={() => this.selectVariable(varIndex)}>
+              onClick={() => this.selectVariable(varIndex)}
+              >
               {variable.title}
             </span>
           </div>
           <div className="col">
             <div className="d-flex">
               {this.renderVarInputs(variable, varIndex)}
+              {this.renderOptionVarDropdown(variable, varIndex)}
               <div className={'VarBulkEditor__form-buttons' + (this.state.variables[varIndex].editing ? " show" : "")}>
                 <button className="btn btn-success">
                   <i className="fas fa-check"></i>
