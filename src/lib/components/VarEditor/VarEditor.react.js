@@ -15,6 +15,8 @@ const initialState = {
   correlatedTo: '',
   correlationFactor: '',
   formIsValid: false,
+  modalBodyOverflowY: 'auto',
+  modalBodyHeight: 'auto',
   modalTitle: 'Add Variable',
   newVarOptionValue: '',
   show: false,
@@ -48,27 +50,31 @@ export default class VarEditor extends Component {
     this.state = initialState;
 
     this.close = this.close.bind(this);
+    this.handleAddOption = this.handleAddOption.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleOptionInputChange = this.handleOptionInputChange.bind(this);
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
+    this.handleVarOptionClick = this.handleVarOptionClick.bind(this);
+    this.removeVariableOption = this.removeVariableOption.bind(this);
     this.renderCorrelate = this.renderCorrelate.bind(this);
     this.renderMethodDropdown = this.renderMethodDropdown.bind(this);
     this.renderNameInput = this.renderNameInput.bind(this);
+    this.renderOptionVarOptions = this.renderOptionVarOptions.bind(this);
     this.renderTypeDropdown = this.renderTypeDropdown.bind(this);
+    this.resetValues = this.resetValues.bind(this);
+    this.setModelOverflow = this.setModelOverflow.bind(this);
     this.submit = this.submit.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.resetValues = this.resetValues.bind(this);
-    this.handleAddOption = this.handleAddOption.bind(this);
-    this.renderOptionVarOptions = this.renderOptionVarOptions.bind(this);
-    this.handleVarOptionClick = this.handleVarOptionClick.bind(this);
-    this.removeVariableOption = this.removeVariableOption.bind(this);
-    this.handleOptionInputChange = this.handleOptionInputChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.setModelOverflow();
   }
 
   componentWillReceiveProps(newProps) {
     // Show component if props.data contains new timestamp
     if (newProps.data.timestamp !== this.props.data.timestamp) {
       const variable = newProps.data.variable;
-
       // If no var just show the editor
       if (!variable) {
         this.setState({
@@ -136,8 +142,6 @@ export default class VarEditor extends Component {
   //   const target = event.target;
   //   const value = target.value;
   //   const name = target.name;
-  //   console.log('value: ', value);
-  //   console.log('name: ', name);
   // }
 
   handleValueInputChange(event) {
@@ -240,34 +244,6 @@ export default class VarEditor extends Component {
         this.setState({ varTypeMissing: true })
         return false;
     }
-
-    // let isValid = true;
-    // const varsToVerify = [
-    //   'varMethod',
-    //   'varName',
-    //   'varTitle',
-    //   'varType',
-    //   'varValue',
-    // ]
-    // // TODO:
-    // // validata 'varValue' properly
-    // const vars = pick(varsToVerify, this.state)
-
-    // for (const i in vars) {
-    //   const val = vars[i];
-    //   if (val === '') {
-    //     isValid = false;
-    //   }
-    // }
-
-    // // Validate riskVariable
-    // if (
-    //   this.state.varType === 'riskVariable'
-    //   && !this.valueProbabilityIsValid()) {
-    //   return false;
-    // }
-
-    // return isValid;
   }
 
   valueProbabilityIsValid() {
@@ -278,7 +254,35 @@ export default class VarEditor extends Component {
     return false;
   }
 
+  setModelOverflow() {
+    const modalBodyHeight = this.modalRef.clientHeight;
+    const modalBodyClientHeight = this.modalBodyRef.clientHeight;
+    const modalBodyInnerHeight = this.modalBodyRef.innerHeight;
+    // const modalBodyHeight = this.modalBodyRef.height;
+    const modalBodyOffsetHeight = this.modalBodyRef.offsetHeight;
+    const windowHeight = window.innerHeight;
+    const modalMargins = 200;
+
+    const availableSpace = windowHeight-modalMargins;
+    const requiredModalSpace = modalBodyHeight-(modalBodyHeight-modalBodyHeight)
+
+
+
+
+    if (availableSpace < requiredModalSpace) {
+      this.setState({
+        modalBodyOverflowY: 'scroll',
+        modalBodyHeight: 'calc(100vh - 200px)'
+      })
+    } else {
+      this.setState({modalBodyOverflowY: '-webkit-paged-y'})
+    }
+  }
+
   toggle(attr, close = false) {
+
+    this.setModelOverflow();
+
     if (close) {
       this.setState({
         [attr]: false
@@ -398,7 +402,8 @@ export default class VarEditor extends Component {
     })
   }
 
-  handleAddOption() {
+  handleAddOption(e) {
+    e.preventDefault();
     const newVarOptionValue = this.state.newVarOptionValue
     if (newVarOptionValue === '') {
       this.setState({varOptionsMissing: true})
@@ -443,12 +448,10 @@ export default class VarEditor extends Component {
     const value = event.target.value
     const varOptions = [...this.state.varOptions]
     varOptions[optionIndex] = value
-    this.setState({ varOptions })
-
+    this.setState({ varOptions, varValue: '' })
   }
 
   removeVariableOption(option) {
-    console.log('option: ', option);
     const newVarOptions = this.state.varOptions.slice();
     this.setState({ varOptions: newVarOptions.filter(i => i !== option) })
     this.toggle('varOptionValueDropdownIsOpen', true);
@@ -492,7 +495,7 @@ export default class VarEditor extends Component {
           onChange={this.handleInputChange}
           value={this.state.newVarOptionValue} />
         <button
-          onClick={this.handleAddOption}
+          onClick={(e) => this.handleAddOption(e)}
           className={"btn btn-block btn-sm" + (varOptionsMissing ? ' btn-danger' : ' btn-secondary')}>
             { varOptionsMissing ? 'Add atleast two options' : 'Add another option'}
           </button>
@@ -733,6 +736,12 @@ export default class VarEditor extends Component {
   }
 
   render() {
+
+    const bodyStyle = {
+      overflowY: this.state.modalBodyOverflowY,
+      maxHeight: this.state.modalBodyHeight,
+    }
+
     return (
       <div>
         <div
@@ -741,7 +750,7 @@ export default class VarEditor extends Component {
           role="dialog"
           style={{ "display": (this.state.show ? 'block' : 'none') }}
         >
-          <div className="VarEditor modal-dialog" role="document">
+          <div className="VarEditor modal-dialog" role="document" ref={(el)=>{this.modalRef = el}} >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">{this.state.modalTitle}</h5>
@@ -750,7 +759,7 @@ export default class VarEditor extends Component {
                 </button>
               </div>
               <form onSubmit={this.submit}>
-                <div className="modal-body">
+                <div className="modal-body" style={bodyStyle} ref={(el)=>{this.modalBodyRef = el}} >
                   {this.renderTitleInput()}
                   {this.renderNameInput()}
                   {this.renderDescriptionInput()}

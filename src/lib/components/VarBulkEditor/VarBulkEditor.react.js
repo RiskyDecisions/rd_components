@@ -14,7 +14,7 @@ export default class VarBulkEditor extends Component {
     this.state = {
       // Keep variables in object so they are faster to change than in array
       variables: {},
-      varOptionValueDropdownIsOpen: false
+      optionDropdownOpenVarIndex: null
     }
     this.doneEditing = this.doneEditing.bind(this);
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
@@ -182,6 +182,21 @@ export default class VarBulkEditor extends Component {
     });
   }
 
+  toggleOptionDropdown(varIndex) {
+    const currentOpenIndex = this.state.optionDropdownOpenVarIndex;
+    // Toggle if var already selected
+    if (currentOpenIndex === varIndex) {
+      this.setState({
+        'optionDropdownOpenVarIndex': null
+      })
+    }
+    else {
+      this.setState({
+        'optionDropdownOpenVarIndex': varIndex
+      })
+    }
+  }
+
   handleVarOptionClick(option, varIndex) {
     const variables = [...this.state.variables];
     const currentVar = variables[varIndex];
@@ -197,7 +212,7 @@ export default class VarBulkEditor extends Component {
     variables[varIndex] = currentVar;
     this.setState({
       variables,
-      varOptionValueDropdownIsOpen: false
+      optionDropdownOpenVarIndex: null
     }, ()=> {
       this.onSubmit(varIndex);
     });
@@ -220,7 +235,7 @@ export default class VarBulkEditor extends Component {
           <button
             className="btn btn-block btn-light dropdown-toggle"
             type="button"
-            onClick={() => this.toggle('varOptionValueDropdownIsOpen')}
+            onClick={() => this.toggleOptionDropdown(varIndex)}
             aria-haspopup="true"
             aria-expanded="false"
           >
@@ -228,7 +243,7 @@ export default class VarBulkEditor extends Component {
           </button>
           <div
             className="dropdown-menu w-100"
-            style={{ 'display': this.state.varOptionValueDropdownIsOpen ? 'block' : 'none' }}
+            style={{ 'display': this.state.optionDropdownOpenVarIndex === varIndex ? 'block' : 'none' }}
           >
             {
               varOptions.map((option) => {
