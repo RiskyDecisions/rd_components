@@ -102,8 +102,10 @@ export default class VarBulkEditor extends Component {
     this.setState({ variables });
   }
 
-  // onSubmit(event, varIndex) {
-  onSubmit(varIndex) {
+  onSubmit(varIndex, event) {
+    if (event) {
+      event.preventDefault()
+    }
     if (this.props.setProps) {
       const variable = this.state.variables[varIndex]
       let newValue = ''
@@ -219,8 +221,6 @@ export default class VarBulkEditor extends Component {
             className="btn btn-block btn-light dropdown-toggle"
             type="button"
             onClick={() => this.toggle('varOptionValueDropdownIsOpen')}
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
           >
@@ -304,7 +304,7 @@ export default class VarBulkEditor extends Component {
 
   renderVarRow(variable, varIndex) {
     return (
-      <form data-var-index={varIndex} key={varIndex} onSubmit={() => this.onSubmit(varIndex)}>
+      <form data-var-index={varIndex} key={varIndex} onSubmit={(e) => this.onSubmit(varIndex, e)}>
         <div className={"form-row" + (this.state.selectedRowIndex === varIndex ? " selected" : "")}>
           <div className="col"
               data-balloon={'name: ' + variable.name}

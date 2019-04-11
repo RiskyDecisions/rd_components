@@ -61,6 +61,7 @@ export default class VarEditor extends Component {
     this.renderOptionVarOptions = this.renderOptionVarOptions.bind(this);
     this.handleVarOptionClick = this.handleVarOptionClick.bind(this);
     this.removeVariableOption = this.removeVariableOption.bind(this);
+    this.handleOptionInputChange = this.handleOptionInputChange.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -293,7 +294,7 @@ export default class VarEditor extends Component {
   renderTitleInput() {
     return (
       <div className="form-group">
-        <label htmlFor="varTitle">Title</label>
+        {/* <label htmlFor="varTitle">Title</label> */}
         <input
           autoFocus
           type="string"
@@ -312,7 +313,7 @@ export default class VarEditor extends Component {
   renderNameInput() {
     return (
       <div className="form-group">
-        <label htmlFor="varName">Name (Used for reference in functions)</label>
+        {/* <label htmlFor="varName">Name (Used for reference in functions)</label> */}
         <input
           autoFocus
           type="string"
@@ -330,7 +331,7 @@ export default class VarEditor extends Component {
   renderDescriptionInput() {
     return (
       <div className="form-group">
-        <label htmlFor="varDescription">Description</label>
+        {/* <label htmlFor="varDescription">Description</label> */}
         <input
           autoFocus
           type="string"
@@ -349,7 +350,7 @@ export default class VarEditor extends Component {
     const missing = this.state.varTypeMissing;
     return (
       <div className="form-group">
-        <label htmlFor="varType">Type</label>
+        {/* <label htmlFor="varType">Type</label> */}
         <div className="dropdown">
           <button
             className={'btn btn-block' + (missing ? ' btn-danger' : ' btn-outline-secondary')}
@@ -438,6 +439,14 @@ export default class VarEditor extends Component {
     this.toggle('varOptionValueDropdownIsOpen', true)
   }
 
+  handleOptionInputChange(event, optionIndex) {
+    const value = event.target.value
+    const varOptions = [...this.state.varOptions]
+    varOptions[optionIndex] = value
+    this.setState({ varOptions })
+
+  }
+
   removeVariableOption(option) {
     console.log('option: ', option);
     const newVarOptions = this.state.varOptions.slice();
@@ -458,13 +467,13 @@ export default class VarEditor extends Component {
           varOptions.length > 0 ?
             varOptions.map((option, i) => {
               return (
-                <div className="input-group mb-1" key={`${option}-${i}`}>
+                <div className="input-group mb-1" key={i}>
                   <input
                     type="text"
                     name={`varOptionValue-${i}`}
                     className="form-control"
                     value={option}
-                    onChange={this.handleInputChange} />
+                    onChange={e => this.handleOptionInputChange(e, i)} />
                   <div className="input-group-append">
                     <button className="btn btn-outline-danger" type="button" onClick={() => this.removeVariableOption(option)}>
                       <i className="fas fa-times" />
@@ -573,9 +582,9 @@ export default class VarEditor extends Component {
             style={{ 'display': this.state.varOptionValueDropdownIsOpen ? 'block' : 'none' }}
           >
             {
-              this.state.varOptions.map((option) => {
+              this.state.varOptions.map((option, i) => {
                 return (
-                  <a key={option}
+                  <a key={i}
                     className="dropdown-item"
                     href="#"
                     onClick={() => this.handleVarOptionClick(option)}
