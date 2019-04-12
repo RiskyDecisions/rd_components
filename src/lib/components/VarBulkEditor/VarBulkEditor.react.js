@@ -34,9 +34,13 @@ export default class VarBulkEditor extends Component {
 
         // optionVariable(s) dont have any method, but an varOptions array
         if (variable.type === 'optionVariable') {
-          const varOptions = variable.value.split(',')
-          varOptions.shift()
-          newVariables[varIndex].varOptions = varOptions
+
+          const varValue = variable.value.replace(/\s/g, '');
+          // Split selected key from options
+          const options = JSON.parse(varValue.split(/,(?={)/)[1])
+          newVariables[varIndex].varOptions = options
+          newVariables[varIndex].varValue = varValue
+
         } else {
 
           const valList = variable.value.toString().trim().split(' ')
@@ -225,9 +229,10 @@ export default class VarBulkEditor extends Component {
       return null
     }
 
-    const varValue = variable.value;
-    const varOptions = varValue.split(',')
-    const varOptionSelected = varOptions.shift()
+    // The varValue looks like this for an optionVariable:
+    // '1,{"1":"apple","2":"banana"}'
+    const [selectedKey, optionsStr] = variable.value.split(/,(?={)/)
+    const options = JSON.parse(optionsStr)
 
     return (
       <div className="flex-even">
@@ -239,21 +244,21 @@ export default class VarBulkEditor extends Component {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            { varOptionSelected }
+            { `${selectedKey}: ${options[selectedKey]}` }
           </button>
           <div
             className="dropdown-menu w-100"
             style={{ 'display': this.state.optionDropdownOpenVarIndex === varIndex ? 'block' : 'none' }}
           >
             {
-              varOptions.map((option) => {
+              Object.keys(options).map((key) => {
                 return (
-                  <a key={option}
+                  <a key={options[key]}
                     className="dropdown-item"
                     href="#"
-                    onClick={() => this.handleVarOptionClick(option, varIndex)}
+                    onClick={() => this.handleVarOptionClick(key, varIndex)}
                   >
-                    {option}
+                    {`${key} :${options[key]}`}
                   </a>
                 )
               })

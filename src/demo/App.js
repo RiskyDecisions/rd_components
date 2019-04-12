@@ -52,19 +52,7 @@ const vars = [
     "name": "",
     "title": "asdf",
     "type": "optionVariable",
-    "value": "a,a,b"
-  },
-  {
-    "calculated_on": "",
-    "correlation": "",
-    "factor": "",
-    "id": 507,
-    "method": "",
-    "module_id": 5,
-    "name": "",
-    "title": "qwer",
-    "type": "optionVariable",
-    "value": "1,1,2"
+    "value": '1,{"1":"apple","2":"banana"}'
   }
 ]
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { pick } from 'ramda';
+import { clone } from 'ramda';
 
 import './VarEditor.css';
 import { TYPE_METHOD_MAP } from '../../constants/typeMethodMap';
@@ -27,7 +27,7 @@ const initialState = {
   varMethodDropdownIsOpen: false,
   varName: '',
   varOptionValueDropdownIsOpen: false,
-  varOptions: [],
+  varOptions: {},
   varTitle: '',
   varType: '',
   varTypeDropdownIsOpen: false,
@@ -100,7 +100,7 @@ export default class VarEditor extends Component {
         varTitle: variable.title || '',
         varType: variable.type || '',
         varValue: variable.value.toString().trim() || '',
-        varOptions: this.parseNewPropsOptions(variable.type, variable.value.toString().trim())
+        varOptions: this.parseNewPropsOptions(variable.type, variable.value)
       }
 
       // Split the string value
@@ -124,9 +124,12 @@ export default class VarEditor extends Component {
       return []
     }
     // Removing the first value, which is the default value
-    const varOptions = varValue.split(',')
-    varOptions.shift()
-    return varOptions
+    // const varOptions = varValue.split(',')
+    // varOptions.shift()
+    const value = varValue.replace(/\s/g, '');
+    // Split selected key from options
+    const options = JSON.parse(value.split(/,(?={)/)[1])
+    return options
   }
 
   handleInputChange(event) {
@@ -220,7 +223,7 @@ export default class VarEditor extends Component {
           return false;
         }
         return true;
-        case 'riskVariable':
+      case 'riskVariable':
         if (varMethod === '') {
           this.setState({ varMethodMissing: true })
           return false;
@@ -263,8 +266,8 @@ export default class VarEditor extends Component {
     const windowHeight = window.innerHeight;
     const modalMargins = 200;
 
-    const availableSpace = windowHeight-modalMargins;
-    const requiredModalSpace = modalBodyHeight-(modalBodyHeight-modalBodyHeight)
+    const availableSpace = windowHeight - modalMargins;
+    const requiredModalSpace = modalBodyHeight - (modalBodyHeight - modalBodyHeight)
 
 
 
@@ -275,7 +278,7 @@ export default class VarEditor extends Component {
         modalBodyHeight: 'calc(100vh - 200px)'
       })
     } else {
-      this.setState({modalBodyOverflowY: '-webkit-paged-y'})
+      this.setState({ modalBodyOverflowY: '-webkit-paged-y' })
     }
   }
 
@@ -402,21 +405,36 @@ export default class VarEditor extends Component {
     })
   }
 
+  /**
+   * Auto-increment the varOptions key
+   * @param {Object} varOptions
+   */
+  getNextOptionId(varOptions) {
+    if (Object.keys(varOptions).length === 0) {
+      return 1
+    }
+
+    const highestId = Object.keys(varOptions).reduce((a, b) => varOptions[a] > varOptions[b] ? a : b);
+    const nextId = parseInt(highestId, 10) + 1;
+    return nextId;
+  }
+
   handleAddOption(e) {
     e.preventDefault();
     const newVarOptionValue = this.state.newVarOptionValue
     if (newVarOptionValue === '') {
-      this.setState({varOptionsMissing: true})
+      this.setState({ varOptionsMissing: true })
       return;
     }
-    const newVarOptions = this.state.varOptions.slice();
-    newVarOptions.push(newVarOptionValue)
+    const newVarOptions = clone(this.state.varOptions);
+    const nextOptionId = this.getNextOptionId(newVarOptions)
+    newVarOptions[nextOptionId] = newVarOptionValue
     this.setState({
       varOptions: newVarOptions,
       newVarOptionValue: ''
     }, () => {
       if (this.state.varOptions.length >= 2) {
-        this.setState({varOptionsMissing: false})
+        this.setState({ varOptionsMissing: false })
       }
     })
     this.toggle('varOptionValueDropdownIsOpen', true);
@@ -425,18 +443,13 @@ export default class VarEditor extends Component {
   /**
    * The varValue for an optionVariable
    * is the default value followed by the avaiable options:
-   * <defaultValue,optionA,optionB,optionN>
-   * e.g.: banana,apple,banana,orange
+   * <defaultValue,{1,"1":"optionA","2":"optionB","n":"optionN"}>
+   * e.g.: 1,{1:"apple",2:"banana",3:"orange"}
    * @param {string|int} option The selected option from the dropdown
    */
-  handleVarOptionClick(option) {
-    let options = [...this.state.varOptions];
-    options.unshift(option)
-
-    // Make sure we have no un-expected spaces
-    options = options.map(s => typeof(s) === 'string' ? s.trim(): s);
-    const varValue = options.join(',')
-
+  handleVarOptionClick(optionKey) {
+    const options = clone(this.state.varOptions);
+    const varValue = optionKey + ',' + JSON.stringify(options)
     this.setState({
       varValue,
       varValueMissing: false
@@ -451,14 +464,21 @@ export default class VarEditor extends Component {
     this.setState({ varOptions, varValue: '' })
   }
 
-  removeVariableOption(option) {
-    const newVarOptions = this.state.varOptions.slice();
-    this.setState({ varOptions: newVarOptions.filter(i => i !== option) })
+  removeVariableOption(optionKey) {
+    const varOptions = clone(this.state.varOptions);
+    delete varOptions[optionKey]
+
+    // Reset index for all options
+    const newVarOptions = {}
+    Object.keys(varOptions).map((key, i) => {
+      newVarOptions[i+1] = varOptions[key]
+    })
+    this.setState({ varOptions: newVarOptions })
     this.toggle('varOptionValueDropdownIsOpen', true);
   }
 
   renderOptionVarOptions() {
-    const {varOptions, varOptionsMissing} = this.state;
+    const { varOptions, varOptionsMissing } = this.state;
 
     if (this.state.varType !== 'optionVariable') {
       return null;
@@ -467,18 +487,18 @@ export default class VarEditor extends Component {
       <div className="form-group">
         <label htmlFor="varMethod">Define variable options</label>
         {
-          varOptions.length > 0 ?
-            varOptions.map((option, i) => {
+          Object.keys(varOptions).length > 0 ?
+            Object.keys(varOptions).map((key, i) => {
               return (
                 <div className="input-group mb-1" key={i}>
                   <input
                     type="text"
                     name={`varOptionValue-${i}`}
                     className="form-control"
-                    value={option}
+                    value={varOptions[key]}
                     onChange={e => this.handleOptionInputChange(e, i)} />
                   <div className="input-group-append">
-                    <button className="btn btn-outline-danger" type="button" onClick={() => this.removeVariableOption(option)}>
+                    <button className="btn btn-outline-danger" type="button" onClick={() => this.removeVariableOption(key)}>
                       <i className="fas fa-times" />
                     </button>
                   </div>
@@ -497,8 +517,8 @@ export default class VarEditor extends Component {
         <button
           onClick={(e) => this.handleAddOption(e)}
           className={"btn btn-block btn-sm" + (varOptionsMissing ? ' btn-danger' : ' btn-secondary')}>
-            { varOptionsMissing ? 'Add atleast two options' : 'Add another option'}
-          </button>
+          {varOptionsMissing ? 'Add atleast two options' : 'Add another option'}
+        </button>
       </div>
     )
   }
@@ -559,25 +579,26 @@ export default class VarEditor extends Component {
   }
 
   renderVariableOptionValueDropdown() {
-    if (this.state.varOptions.length < 1) {
+    if (this.state.varOptions.length < 1 || this.state.varType !== 'optionVariable') {
       return null;
     }
 
-    const missing = this.state.varValueMissing;
+    const {varValueMissing, varValue, varOptions} = this.state;
+    const optionKey = varValue.split(',')[0]
 
     return (
       <div className="form-group">
         <label htmlFor="varMethod">Option Value</label>
         <div className="dropdown">
           <button
-            className={"btn btn-block" + (missing ? ' btn-danger' : ' btn-outline-secondary')}
+            className={"btn btn-block" + (varValueMissing ? ' btn-danger' : ' btn-outline-secondary')}
             type="button"
             onClick={() => this.toggle('varOptionValueDropdownIsOpen')}
           >
             {
-              this.state.varValue ?
-              this.state.varValue.split(',')[0]
-              : "(Choose option value)"
+              varValue ?
+                `${optionKey}: ${varOptions[optionKey]}`
+                : "(Choose option value)"
             }
           </button>
           <div
@@ -585,14 +606,14 @@ export default class VarEditor extends Component {
             style={{ 'display': this.state.varOptionValueDropdownIsOpen ? 'block' : 'none' }}
           >
             {
-              this.state.varOptions.map((option, i) => {
+              Object.keys(this.state.varOptions).map((key, i) => {
                 return (
                   <a key={i}
                     className="dropdown-item"
                     href="#"
-                    onClick={() => this.handleVarOptionClick(option)}
+                    onClick={() => this.handleVarOptionClick(key)}
                   >
-                    {option}
+                    {`${key}: ${this.state.varOptions[key]}`}
                   </a>
                 )
               })
@@ -750,7 +771,7 @@ export default class VarEditor extends Component {
           role="dialog"
           style={{ "display": (this.state.show ? 'block' : 'none') }}
         >
-          <div className="VarEditor modal-dialog" role="document" ref={(el)=>{this.modalRef = el}} >
+          <div className="VarEditor modal-dialog" role="document" ref={(el) => { this.modalRef = el }} >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">{this.state.modalTitle}</h5>
@@ -759,7 +780,7 @@ export default class VarEditor extends Component {
                 </button>
               </div>
               <form onSubmit={this.submit}>
-                <div className="modal-body" style={bodyStyle} ref={(el)=>{this.modalBodyRef = el}} >
+                <div className="modal-body" style={bodyStyle} ref={(el) => { this.modalBodyRef = el }} >
                   {this.renderTitleInput()}
                   {this.renderNameInput()}
                   {this.renderDescriptionInput()}
