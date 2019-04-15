@@ -242,7 +242,7 @@ export default class VarBulkEditor extends Component {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            { `${selectedKey}: ${options[selectedKey]}` }
+            { `${selectedKey}: (${options[selectedKey]})` }
           </button>
           <div
             className="dropdown-menu w-100"
@@ -256,7 +256,7 @@ export default class VarBulkEditor extends Component {
                     href="#"
                     onClick={() => this.handleVarOptionClick(key, varIndex)}
                   >
-                    {`${key} :${options[key]}`}
+                    {`${key}: (${options[key]})`}
                   </a>
                 )
               })
