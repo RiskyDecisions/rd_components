@@ -283,7 +283,7 @@ export default class VarBulkEditor extends Component {
         placeholder: 'P(X)',
         min: 0,
         max: 1,
-        step: 0.1,
+        step: 0.001,
         dataBalloonPos: "up",
         dataBalloon: "Probability (between 0 and 1)"
       })

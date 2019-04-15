@@ -5,7 +5,7 @@ const bernoulli = [{
   dataBalloonPos: 'up',
   min: 0,
   max: 0,
-  step: 0.1
+  step: 0.001
 }]
 const constant = [{ type: 'string', placeholder: 'Constant value', dataBalloon: 'Constant', dataBalloonPos: 'up' }]
 const func = [{

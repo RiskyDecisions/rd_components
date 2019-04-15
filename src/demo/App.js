@@ -53,7 +53,18 @@ const vars = [
     "title": "asdf",
     "type": "optionVariable",
     "value": '1,{"1":"apple","2":"banana"}'
-  }
+  },
+  {
+    "module_id": 2,
+    "id": 201,
+    "correlation": "",
+    "factor": "",
+    "method": "pert",
+    "name": "ref_d_wab",
+    "title": "Welltec Elements (Rig Days)",
+    "type": "riskVariable",
+    "value": "0 .15 .2 .3"
+  },
 ]
 
 
