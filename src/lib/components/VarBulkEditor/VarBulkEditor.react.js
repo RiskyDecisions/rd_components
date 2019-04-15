@@ -34,7 +34,6 @@ export default class VarBulkEditor extends Component {
 
         // optionVariable(s) dont have any method, but an varOptions array
         if (variable.type === 'optionVariable') {
-
           const varValue = variable.value.replace(/\s/g, '');
           // Split selected key from options
           const options = JSON.parse(varValue.split(/,(?={)/)[1])
@@ -71,7 +70,6 @@ export default class VarBulkEditor extends Component {
    */
   selectVariable(varIndex, toggle=true) {
     const variable = this.state.variables[varIndex]
-
     // If the current row is already selected,
     // we deselect and emit null
     if (this.state.selectedRowIndex === varIndex && toggle) {
@@ -287,7 +285,7 @@ export default class VarBulkEditor extends Component {
         max: 1,
         step: 0.1,
         dataBalloonPos: "up",
-        dataBalloon: "Probability of risk (between 0 and 1)"
+        dataBalloon: "Probability (between 0 and 1)"
       })
     }
 

@@ -121,7 +121,7 @@ export default class VarEditor extends Component {
 
   parseNewPropsOptions(varType, varValue) {
     if (varType !== 'optionVariable') {
-      return []
+      return {}
     }
     // Removing the first value, which is the default value
     // const varOptions = varValue.split(',')
@@ -259,19 +259,10 @@ export default class VarEditor extends Component {
 
   setModelOverflow() {
     const modalBodyHeight = this.modalRef.clientHeight;
-    const modalBodyClientHeight = this.modalBodyRef.clientHeight;
-    const modalBodyInnerHeight = this.modalBodyRef.innerHeight;
-    // const modalBodyHeight = this.modalBodyRef.height;
-    const modalBodyOffsetHeight = this.modalBodyRef.offsetHeight;
     const windowHeight = window.innerHeight;
     const modalMargins = 200;
-
     const availableSpace = windowHeight - modalMargins;
     const requiredModalSpace = modalBodyHeight - (modalBodyHeight - modalBodyHeight)
-
-
-
-
     if (availableSpace < requiredModalSpace) {
       this.setState({
         modalBodyOverflowY: 'scroll',
@@ -301,7 +292,6 @@ export default class VarEditor extends Component {
   renderTitleInput() {
     return (
       <div className="form-group">
-        {/* <label htmlFor="varTitle">Title</label> */}
         <input
           autoFocus
           type="string"
@@ -320,7 +310,6 @@ export default class VarEditor extends Component {
   renderNameInput() {
     return (
       <div className="form-group">
-        {/* <label htmlFor="varName">Name (Used for reference in functions)</label> */}
         <input
           autoFocus
           type="string"
@@ -338,7 +327,6 @@ export default class VarEditor extends Component {
   renderDescriptionInput() {
     return (
       <div className="form-group">
-        {/* <label htmlFor="varDescription">Description</label> */}
         <input
           autoFocus
           type="string"
@@ -357,7 +345,6 @@ export default class VarEditor extends Component {
     const missing = this.state.varTypeMissing;
     return (
       <div className="form-group">
-        {/* <label htmlFor="varType">Type</label> */}
         <div className="dropdown">
           <button
             className={'btn btn-block' + (missing ? ' btn-danger' : ' btn-outline-secondary')}
@@ -391,10 +378,10 @@ export default class VarEditor extends Component {
   handleTypeClick(typeVal) {
     this.resetValues();
     this.setState({
+      varMethod: '',
       varType: typeVal,
       varTypeDropdownIsOpen: false,
-      varMethod: '',
-      varTypeMissing: false
+      varTypeMissing: false,
     })
   }
 
