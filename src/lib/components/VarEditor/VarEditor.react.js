@@ -584,7 +584,7 @@ export default class VarEditor extends Component {
           >
             {
               varValue ?
-                `${optionKey}: (${varOptions[optionKey]})`
+                `${optionKey} (${varOptions[optionKey]})`
                 : "(Choose option value)"
             }
           </button>
@@ -600,7 +600,7 @@ export default class VarEditor extends Component {
                     href="#"
                     onClick={() => this.handleVarOptionClick(key)}
                   >
-                    {`${key}: (${this.state.varOptions[key]})`}
+                    {`${key} (${this.state.varOptions[key]})`}
                   </a>
                 )
               })
