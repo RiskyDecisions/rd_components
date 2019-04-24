@@ -21,7 +21,7 @@ const initialState = {
   newVarOptionValue: '',
   show: false,
   submitBtnText: 'Save Variable',
-  varDescriptin: '',
+  varDescription: '',
   varId: '',
   varMethod: '',
   varMethodDropdownIsOpen: false,
@@ -204,10 +204,16 @@ export default class VarEditor extends Component {
 
   resetValues() {
     this.setState({
-      varValue: '',
+      varDescription: '',
+      varMethod: '',
+      varName: '',
+      varOptions: {},
+      varTitle: '',
+      varType: '',
       varValue0: '',
       varValue1: '',
       varValue2: '',
+      varValue: '',
       varValueProbability: '',
     })
   }
@@ -618,7 +624,7 @@ export default class VarEditor extends Component {
           <input
             min="0"
             max="1"
-            step=".1"
+            step=".001"
             type="number"
             name="varValueProbability"
             id="varValueProbability"
