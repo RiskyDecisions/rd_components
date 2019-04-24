@@ -49,7 +49,9 @@ class Node extends React.Component {
         {iconSpan}
         <span
           onClick={() => this.props.handleClick(this.props.node)}
-          className={this.props.selectedNode === this.props.node.id ? 'selected' : ''}>
+          className={this.props.selectedNode === this.props.node.id ? 'selected' : ''}
+          data-balloon-pos="right"
+          data-balloon={this.props.node.description}>
           {this.props.node.name}
         </span>
         {
