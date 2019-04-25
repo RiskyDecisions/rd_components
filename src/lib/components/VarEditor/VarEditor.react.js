@@ -447,7 +447,7 @@ export default class VarEditor extends Component {
 
   handleOptionInputChange(event, optionIndex) {
     const value = event.target.value
-    const varOptions = [...this.state.varOptions]
+    const varOptions = clone(this.state.varOptions)
     varOptions[optionIndex] = value
     this.setState({ varOptions, varValue: '' })
   }
@@ -476,15 +476,14 @@ export default class VarEditor extends Component {
         <label htmlFor="varMethod">Define variable options</label>
         {
           Object.keys(varOptions).length > 0 ?
-            Object.keys(varOptions).map((key, i) => {
+            Object.keys(varOptions).map((key) => {
               return (
-                <div className="input-group mb-1" key={i}>
+                <div className="input-group mb-1" key={`varOptionValue-${key}`}>
                   <input
                     type="text"
-                    name={`varOptionValue-${i}`}
                     className="form-control"
                     value={varOptions[key]}
-                    onChange={e => this.handleOptionInputChange(e, i)} />
+                    onChange={e => this.handleOptionInputChange(e, key)} />
                   <div className="input-group-append">
                     <button className="btn btn-outline-danger" type="button" onClick={() => this.removeVariableOption(key)}>
                       <i className="fas fa-times" />
