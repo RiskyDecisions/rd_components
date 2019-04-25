@@ -50,9 +50,8 @@ class Node extends React.Component {
         <span
           onClick={() => this.props.handleClick(this.props.node)}
           className={this.props.selectedNode === this.props.node.id ? 'selected' : ''}
-          data-balloon-pos="below"
-          data-balloon={this.props.node.description}
-          data-balloon-length="large">
+          data-balloon-pos="right"
+          data-balloon={this.props.node.description}>
           {this.props.node.name}
         </span>
         {
