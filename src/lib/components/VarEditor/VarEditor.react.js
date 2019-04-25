@@ -204,12 +204,7 @@ export default class VarEditor extends Component {
 
   resetValues() {
     this.setState({
-      varDescription: '',
-      varMethod: '',
-      varName: '',
       varOptions: {},
-      varTitle: '',
-      varType: '',
       varValue0: '',
       varValue1: '',
       varValue2: '',
