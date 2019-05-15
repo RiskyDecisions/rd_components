@@ -70,33 +70,37 @@ export const TYPE_METHOD_MAP = {
         value: "rectangle"
       },
       {
-        name: "Timeseries",
-        value: "timeseries"
+        name: "Triangle",
+        value: "triangle"
       },
-      {
-        name: "Timefunction",
-        value: "timefunction"
-      },
-      {
-        name: "Linear build-up",
-        value: "buildup_linear"
-      },
-      {
-        name: "Exponential build-up",
-        value: "buildup_exp"
-      },
-      {
-        name: "Linear decline/dropoff",
-        value: "decline_linear"
-      },
-      {
-        name: "Exponential decline/dropoff",
-        value: "decline_exp"
-      },
-      {
-        name: "Look-up table",
-        value: "lookup_table"
-      }
+      // {
+      //   name: "Timeseries",
+      //   value: "timeseries"
+      // },
+      // {
+      //   name: "Timefunction",
+      //   value: "timefunction"
+      // },
+      // {
+      //   name: "Linear build-up",
+      //   value: "buildup_linear"
+      // },
+      // {
+      //   name: "Exponential build-up",
+      //   value: "buildup_exp"
+      // },
+      // {
+      //   name: "Linear decline/dropoff",
+      //   value: "decline_linear"
+      // },
+      // {
+      //   name: "Exponential decline/dropoff",
+      //   value: "decline_exp"
+      // },
+      // {
+      //   name: "Look-up table",
+      //   value: "lookup_table"
+      // }
     ]
   },
   variable: {

@@ -25,8 +25,20 @@ const uniform = [
   { type: 'number', placeholder: 'Max.', dataBalloon: 'Maxium', dataBalloonPos: 'up' },
 ]
 
+const rectangle = [
+  { type: 'text', placeholder: 'Total', dataBalloon: 'Total', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Duration', dataBalloon: 'Duration', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Start', dataBalloon: 'Start', dataBalloonPos: 'up' },
+]
+
+const triangle = [
+  { type: 'text', placeholder: 'Total', dataBalloon: 'Total', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Duration', dataBalloon: 'Duration', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Start', dataBalloon: 'Start', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Peak', dataBalloon: 'Peak', dataBalloonPos: 'up' },
+]
+
 export const METHOD_VALUE_INPUT_MAP = {
-  uniform: uniform,
   algorithm: lowMidHigh,
   bernoulli: bernoulli,
   beta: lowMidHigh,
@@ -45,8 +57,10 @@ export const METHOD_VALUE_INPUT_MAP = {
   normal: lowMidHigh,
   pareto: lowMidHigh,
   pert: lowMidHigh,
-  rectangle: lowMidHigh,
+  rectangle: rectangle,
   timefunction: lowMidHigh,
   timeseries: lowMidHigh,
+  triangle: triangle,
+  uniform: uniform,
   uniform_discrete: uniform,
 };
