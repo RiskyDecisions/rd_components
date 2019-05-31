@@ -73,6 +73,10 @@ export const TYPE_METHOD_MAP = {
         name: "Triangle",
         value: "triangle"
       },
+      {
+        name: "Discount",
+        value: "discount"
+      },
       // {
       //   name: "Timeseries",
       //   value: "timeseries"
@@ -140,6 +144,10 @@ export const TYPE_METHOD_MAP = {
       {
         name: "Pareto",
         value: "pareto"
+      },
+      {
+        name: "Sum Timeseries",
+        value: "sumTimeseries"
       }
     ],
     "Discrete Distributions": [

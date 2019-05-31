@@ -38,6 +38,15 @@ const triangle = [
   { type: 'text', placeholder: 'Peak', dataBalloon: 'Peak', dataBalloonPos: 'up' },
 ]
 
+const discountTimeseries = [
+  { type: 'text', placeholder: 'Input Timeseries', dataBalloon: 'Another timeseries as input', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Discount factor', dataBalloon: 'Number or distribution', dataBalloonPos: 'up' },
+]
+
+const sumTimeseries = [
+  { type: 'text', placeholder: 'Input Timeseries', dataBalloon: 'Another timeseries as input', dataBalloonPos: 'up' },
+]
+
 export const METHOD_VALUE_INPUT_MAP = {
   algorithm: lowMidHigh,
   bernoulli: bernoulli,
@@ -48,6 +57,7 @@ export const METHOD_VALUE_INPUT_MAP = {
   constant: constant,
   decline_exp: lowMidHigh,
   decline_linear: lowMidHigh,
+  discount: discountTimeseries,
   exponential: lowMidHigh,
   function: func,
   gamma: lowMidHigh,
@@ -58,6 +68,7 @@ export const METHOD_VALUE_INPUT_MAP = {
   pareto: lowMidHigh,
   pert: lowMidHigh,
   rectangle: rectangle,
+  sumTimeseries: sumTimeseries,
   timefunction: lowMidHigh,
   timeseries: lowMidHigh,
   triangle: triangle,
