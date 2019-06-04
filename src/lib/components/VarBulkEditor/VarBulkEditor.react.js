@@ -325,8 +325,9 @@ export default class VarBulkEditor extends Component {
       <form data-var-index={varIndex} key={varIndex} onSubmit={(e) => this.onSubmit(varIndex, e)}>
         <div className={"form-row" + (this.state.selectedRowIndex === varIndex ? " selected" : "")}>
           <div className="col"
-              data-balloon={'name: ' + variable.name}
+              data-balloon={'name: ' + variable.name + '\ntype: ' + variable.type + '\nmethod: ' + variable.method}
               data-balloon-pos='up'
+              data-balloon-break
             >
             <span
               className="form-control"
