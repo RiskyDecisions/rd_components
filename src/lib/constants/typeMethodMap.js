@@ -1,81 +1,81 @@
 export const TYPE_METHOD_MAP = {
   riskVariable: {
-    "Continuous Distributions": [
+    'Continuous Distributions': [
       {
-        name: "Normal",
-        value: "normal"
+        name: 'Normal',
+        value: 'normal',
       },
       {
-        name: "Lognormal",
-        value: "lognormal"
+        name: 'Lognormal',
+        value: 'lognormal',
       },
       {
-        name: "Pert",
-        value: "pert"
+        name: 'Pert',
+        value: 'pert',
       },
       {
-        name: "Uniform",
-        value: "uniform"
+        name: 'Uniform',
+        value: 'uniform',
       },
       {
-        name: "Beta",
-        value: "beta"
+        name: 'Beta',
+        value: 'beta',
       },
       {
-        name: "Gamma",
-        value: "gamma"
+        name: 'Gamma',
+        value: 'gamma',
       },
       {
-        name: "Exponential",
-        value: "exponential"
+        name: 'Exponential',
+        value: 'exponential',
       },
       {
-        name: "Logistic",
-        value: "logistic"
+        name: 'Logistic',
+        value: 'logistic',
       },
       {
-        name: "Pareto",
-        value: "pareto"
-      }
+        name: 'Pareto',
+        value: 'pareto',
+      },
     ],
-    "Discrete Distributions": [
+    'Discrete Distributions': [
       {
-        name: "Constant",
-        value: "constant"
+        name: 'Constant',
+        value: 'constant',
       },
       {
-        name: "Binomial",
-        value: "binomial"
+        name: 'Binomial',
+        value: 'binomial',
       },
       {
-        name: "Bernoulli",
-        value: "bernoulli"
-      }
+        name: 'Bernoulli',
+        value: 'bernoulli',
+      },
     ],
     Functions: [
       {
-        name: "Exact Function",
-        value: "function"
+        name: 'Exact Function',
+        value: 'function',
       },
       {
-        name: "Algorithm (with uncertainty on the expression itself)",
-        value: "algorithm"
-      }
-    ]
+        name: 'Algorithm (with uncertainty on the expression itself)',
+        value: 'algorithm',
+      },
+    ],
   },
   timeseries: {
     Profiles: [
       {
-        name: "Rectangle",
-        value: "rectangle"
+        name: 'Rectangle',
+        value: 'rectangle',
       },
       {
-        name: "Triangle",
-        value: "triangle"
+        name: 'Triangle',
+        value: 'triangle',
       },
       {
-        name: "Discount",
-        value: "discount"
+        name: 'Discount',
+        value: 'discount',
       },
       // {
       //   name: "Timeseries",
@@ -105,78 +105,84 @@ export const TYPE_METHOD_MAP = {
       //   name: "Look-up table",
       //   value: "lookup_table"
       // }
-    ]
+    ],
+    Functions: [
+      {
+        name: 'Exact Function',
+        value: 'function',
+      },
+    ],
   },
   variable: {
-    "Continuous Distributions": [
+    'Continuous Distributions': [
       {
-        name: "Normal",
-        value: "normal"
+        name: 'Normal',
+        value: 'normal',
       },
       {
-        name: "Lognormal",
-        value: "lognormal"
+        name: 'Lognormal',
+        value: 'lognormal',
       },
       {
-        name: "Pert",
-        value: "pert"
+        name: 'Pert',
+        value: 'pert',
       },
       {
-        name: "Uniform",
-        value: "uniform"
+        name: 'Uniform',
+        value: 'uniform',
       },
       {
-        name: "Beta",
-        value: "beta"
+        name: 'Beta',
+        value: 'beta',
       },
       {
-        name: "Gamma",
-        value: "gamma"
+        name: 'Gamma',
+        value: 'gamma',
       },
       {
-        name: "Exponential",
-        value: "exponential"
+        name: 'Exponential',
+        value: 'exponential',
       },
       {
-        name: "Logistic",
-        value: "logistic"
+        name: 'Logistic',
+        value: 'logistic',
       },
       {
-        name: "Pareto",
-        value: "pareto"
+        name: 'Pareto',
+        value: 'pareto',
       },
       {
-        name: "Sum Timeseries",
-        value: "sumTimeseries"
-      }
+        name: 'Sum Timeseries',
+        value: 'sumTimeseries',
+      },
     ],
-    "Discrete Distributions": [
+    'Discrete Distributions': [
       {
-        name: "Constant",
-        value: "constant"
+        name: 'Constant',
+        value: 'constant',
       },
       {
-        name: "Binomial",
-        value: "binomial"
+        name: 'Binomial',
+        value: 'binomial',
       },
       {
-        name: "Bernoulli",
-        value: "bernoulli"
+        name: 'Bernoulli',
+        value: 'bernoulli',
       },
       {
-        name: "Discrete Uniform",
-        value: "uniform_discrete"
+        name: 'Discrete Uniform',
+        value: 'uniform_discrete',
       },
     ],
     Functions: [
       {
-        name: "Exact Function",
-        value: "function"
+        name: 'Exact Function',
+        value: 'function',
       },
       {
-        name: "Algorithm (with uncertainty on the expression itself)",
-        value: "algorithm"
-      }
-    ]
-  }
-}
+        name: 'Algorithm (with uncertainty on the expression itself)',
+        value: 'algorithm',
+      },
+    ],
+  },
+};
