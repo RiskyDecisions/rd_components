@@ -77,6 +77,10 @@ export const TYPE_METHOD_MAP = {
         name: 'Discount',
         value: 'discount',
       },
+      {
+        name: 'Repeat',
+        value: 'repeat',
+      },
       // {
       //   name: "Timeseries",
       //   value: "timeseries"

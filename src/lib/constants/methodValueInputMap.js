@@ -68,6 +68,7 @@ export const METHOD_VALUE_INPUT_MAP = {
   pareto: lowMidHigh,
   pert: lowMidHigh,
   rectangle: rectangle,
+  repeat: rectangle,
   sumTimeseries: sumTimeseries,
   timefunction: lowMidHigh,
   timeseries: lowMidHigh,
