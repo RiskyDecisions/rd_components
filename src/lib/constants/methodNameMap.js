@@ -19,7 +19,7 @@ export const METHOD_NAME_MAP = {
   pareto: "Pareto",
   pert: "Pert",
   rectangle: "Rectangle",
-  repeat: "Repeat Timeseris",
+  repeat: "Repeat",
   sumTimeseries: "Sum Timeseries",
   timefunction: "Timefunction",
   timeseries: "Timeseries",
