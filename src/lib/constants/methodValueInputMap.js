@@ -31,6 +31,12 @@ const rectangle = [
   { type: 'text', placeholder: 'Start', dataBalloon: 'Start', dataBalloonPos: 'up' },
 ]
 
+const repeat = [
+  { type: 'text', placeholder: 'Rate', dataBalloon: 'Rate', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Duration', dataBalloon: 'Duration', dataBalloonPos: 'up' },
+  { type: 'text', placeholder: 'Start', dataBalloon: 'Start', dataBalloonPos: 'up' },
+]
+
 const triangle = [
   { type: 'text', placeholder: 'Total', dataBalloon: 'Total', dataBalloonPos: 'up' },
   { type: 'text', placeholder: 'Duration', dataBalloon: 'Duration', dataBalloonPos: 'up' },
@@ -68,7 +74,7 @@ export const METHOD_VALUE_INPUT_MAP = {
   pareto: lowMidHigh,
   pert: lowMidHigh,
   rectangle: rectangle,
-  repeat: rectangle,
+  repeat: repeat,
   sumTimeseries: sumTimeseries,
   timefunction: lowMidHigh,
   timeseries: lowMidHigh,
